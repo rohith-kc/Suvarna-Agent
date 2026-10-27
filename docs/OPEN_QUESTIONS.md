@@ -41,3 +41,14 @@ something the brief got wrong or doesn't know — don't guess, ask KC.
    `simulation/agent_runner.py` should import and reuse this rather than
    re-implementing the same logic. **(ask Karta — confirm this is fine; no
    action needed otherwise)**
+
+11. Phase 4's cost guard (`run_simulation.py`, Part 5.5: "print an estimate
+   before any run over 20 calls... using token counts") is only a
+   call-count gate (>20 calls needs `--yes`), not a real token-based $
+   estimate. A true estimate needs each provider's current per-token
+   price, which Part 0 rule 5 says to verify in the provider's own docs
+   rather than hardcode from memory — not done yet since KC hasn't picked
+   a provider. `MAX_SIM_COST_USD` is read into `simulation/config.py` but
+   not yet enforced. **(ask Karta — once a provider is chosen in HUMAN
+   GATE 4, verify its current pricing and wire a real estimate before any
+   large paid run)**
