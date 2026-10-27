@@ -1,9 +1,14 @@
-"""STUB — Phase 0 scaffold only.
+"""Compliance gate (CLAUDE.md Part 5.3, Part 2 rule 1).
 
-Built in Phase 2 (CLAUDE.md Part 5.3a): is_callable(lead) is False when
-dnd_flag is true, or when UC1 and consent_status is empty.
+A DND lead is never called, in simulation or otherwise. A UC1 lead without
+recorded consent is never called either.
 """
 
 
 def is_callable(lead):
-    raise NotImplementedError("Phase 2: implement per CLAUDE.md Part 5.3a")
+    visible = lead.visible
+    if visible.get("dnd_flag"):
+        return False
+    if visible.get("use_case") == "loan_seeker" and not visible.get("consent_status"):
+        return False
+    return True

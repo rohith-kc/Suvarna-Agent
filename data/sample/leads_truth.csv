@@ -1,0 +1,21 @@
+lead_id,owns_gold,grams,has_stones,purity_karat,persona,answers_phone,right_person,amount_needed,purpose,eligible_amount,needs_money_within_days,true_blocker,expected_outcome
+gold_applicant-0000,True,27.2,False,22,cooperative,True,True,300000,business expenses,250000,30,unsure_amount,appraisal_booked
+loan_seeker-0001,False,0,False,22,suspicious,True,True,437075,a medical emergency,0,30,,not_a_fit
+gold_applicant-0002,True,20.5,False,22,wants_human,True,True,300000,paying off another loan,195000,14,unsure_amount,callback_scheduled
+loan_seeker-0003,False,0,False,22,suspicious,True,True,57904,a medical emergency,0,7,,not_a_fit
+gold_applicant-0004,True,49.0,True,22,suspicious,True,True,300000,business expenses,416000,14,unsure_documents,whatsapp_sent
+loan_seeker-0005,True,9.2,True,22,cooperative,True,True,69963,home renovation,83000,1,,appraisal_booked
+gold_applicant-0006,True,65.3,True,22,hostile_dnd,True,True,150000,a family wedding,520000,0,just_browsing,opt_out
+loan_seeker-0007,True,36.4,False,22,forgetful,True,True,50000,paying off another loan,326000,3,,whatsapp_sent
+gold_applicant-0008,True,49.1,True,18,silent_no_answer,False,True,50000,children's education,341000,0,branch_far,no_answer
+loan_seeker-0009,True,31.6,False,22,cooperative,True,True,150000,children's education,283000,30,,appraisal_booked
+gold_applicant-0010,True,68.6,False,22,cooperative,True,True,500000,home renovation,576000,0,unsure_amount,appraisal_booked
+loan_seeker-0011,True,29.3,False,22,wrong_person,True,False,186463,business expenses,262000,3,,wrong_person
+gold_applicant-0012,True,77.5,False,22,confused_elderly,True,True,200000,children's education,651000,0,safety_worry,callback_scheduled
+loan_seeker-0013,True,52.5,False,22,wants_human,True,True,300000,children's education,470000,1,,callback_scheduled
+gold_applicant-0014,True,30.8,False,18,cooperative,True,True,300000,home renovation,240000,14,unsure_amount,appraisal_booked
+loan_seeker-0015,True,64.0,True,22,wants_human,True,True,95386,a medical emergency,509000,1,,callback_scheduled
+gold_applicant-0016,True,11.5,False,22,hostile_dnd,True,True,500000,home renovation,109000,3,got_money_elsewhere,opt_out
+loan_seeker-0017,True,78.8,True,22,cooperative,True,True,92677,a family wedding,627000,0,,appraisal_booked
+gold_applicant-0018,True,13.2,False,18,cooperative,True,True,150000,paying off another loan,102000,3,branch_far,appraisal_booked
+loan_seeker-0019,True,33.1,False,22,hostile_dnd,True,True,364885,business expenses,296000,3,,opt_out

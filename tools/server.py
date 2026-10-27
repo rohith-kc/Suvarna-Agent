@@ -6,10 +6,10 @@ appended to events.jsonl. All endpoints are protected by the X-Tool-Secret
 header, except that the check is skipped (with a logged warning) when
 TOOL_SECRET is unset, e.g. in local dev.
 
-book_appraisal's doorstep refusal and get_customer_context's "not available"
-response are PLACEHOLDERS: doorstep availability is a lender fact not yet
-confirmed (docs/OPEN_QUESTIONS.md item 3), and the fake CRM get_customer_context
-reads from is built in Phase 2 (CLAUDE.md Part 5.3a).
+book_appraisal's doorstep refusal is a PLACEHOLDER: doorstep availability is
+a lender fact not yet confirmed (docs/OPEN_QUESTIONS.md item 3).
+get_customer_context reads data/crm.sqlite (CLAUDE.md Part 5.3a), built by
+data/build_crm.py; it returns a clear error if that file doesn't exist yet.
 """
 
 import itertools
@@ -21,6 +21,7 @@ import time
 from fastapi import Depends, FastAPI, Header, HTTPException
 from pydantic import BaseModel
 
+from data.build_crm import read_customer_context
 from tools.eligibility import calculate_eligibility
 
 logger = logging.getLogger("tools.server")
@@ -156,11 +157,15 @@ class CustomerContextRequest(BaseModel):
 
 @app.post("/get_customer_context", dependencies=[Depends(verify_tool_secret)])
 def get_customer_context_endpoint(req: CustomerContextRequest):
-    # Phase 2 (CLAUDE.md Part 5.3a) builds data/crm.sqlite and wires this up
-    # for real, reading visible fields only, never truth fields.
-    result = {
-        "ok": False,
-        "error": "customer CRM is not built yet (CLAUDE.md Phase 2 / Part 5.3a)",
-    }
+    db_path = os.environ.get("CRM_DB_PATH", "data/crm.sqlite")
+    context = read_customer_context(req.lead_id, db_path)
+    if context is None:
+        result = {
+            "ok": False,
+            "error": "lead_id not found in CRM, or CRM not built yet "
+                     "(run data/build_crm.py)",
+        }
+    else:
+        result = {"ok": True, **context}
     log_event("get_customer_context", req.model_dump(), result)
     return result

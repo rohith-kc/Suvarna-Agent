@@ -1,0 +1,21 @@
+lead_id,use_case,customer_name,phone,city,preferred_language,consent_status,dnd_flag,source,call_trigger,trigger_detail,stated_loan_amount,last_step_completed,minutes_since_stop,stopped_at
+gold_applicant-0000,gold_applicant,Manoj,+910914177763,Mysuru,Kannada,applicant,False,website,gold_loan_application,,,amount_entered,6,2026-01-01T11:54:00+00:00
+loan_seeker-0001,loan_seeker,Ramesh,+910636083778,Chennai,Tamil,opted_in_form,False,app_download,app_download,installed an app comparing personal loans,400000,,,
+gold_applicant-0002,gold_applicant,Vikram,+910158683449,Pune,Hindi,applicant,False,app,gold_loan_application,,,amount_entered,1440,2025-12-31T12:00:00+00:00
+loan_seeker-0003,loan_seeker,Vijay,+910286570704,Lucknow,Hindi,opted_in_form,False,ad,ad,saw an ad for quick personal loans online,50000,,,
+gold_applicant-0004,gold_applicant,Karthik,+910957489068,Hubballi,English,applicant,False,website,gold_loan_application,,,appraisal_slot_page,2880,2025-12-30T12:00:00+00:00
+loan_seeker-0005,loan_seeker,Shalini,+910790328921,Jaipur,English,opted_in_form,False,app_download,app_download,downloaded a loan app looking for personal loan offers,75000,,,
+gold_applicant-0006,gold_applicant,Karthik,+910412248244,Pune,English,applicant,False,app,gold_loan_application,,,phone_verified,1440,2025-12-31T12:00:00+00:00
+loan_seeker-0007,loan_seeker,Amit,+910062027868,Chennai,Hindi,aggregator_shared,False,aggregator,aggregator,compared personal loan rates on an aggregator site,,,,
+gold_applicant-0008,gold_applicant,Manoj,+910304114426,Lucknow,Hindi,applicant,True,app,gold_loan_application,,,kyc_started,90,2026-01-01T10:30:00+00:00
+loan_seeker-0009,loan_seeker,Neha,+910969371648,Pune,Marathi,opted_in_form,False,app_download,app_download,installed an app comparing personal loans,,,,
+gold_applicant-0010,gold_applicant,Vijay,+910685878310,Mysuru,Kannada,applicant,False,app,gold_loan_application,,,amount_entered,600,2026-01-01T02:00:00+00:00
+loan_seeker-0011,loan_seeker,Rohit,+910061622519,Lucknow,English,aggregator_shared,False,aggregator,aggregator,asked for loan offers on a comparison site,200000,,,
+gold_applicant-0012,gold_applicant,Ramesh,+910901610339,Kochi,Malayalam,applicant,False,app,gold_loan_application,,,phone_verified,15,2026-01-01T11:45:00+00:00
+loan_seeker-0013,loan_seeker,Neha,+910500049576,Hyderabad,Telugu,opted_in_form,True,app_download,app_download,installed an app comparing personal loans,,,,
+gold_applicant-0014,gold_applicant,Neha,+910433514171,Lucknow,Hindi,applicant,False,website,gold_loan_application,,,appraisal_slot_page,6,2026-01-01T11:54:00+00:00
+loan_seeker-0015,loan_seeker,Sunita,+910330361481,Mysuru,Kannada,opted_in_form,True,app_download,app_download,installed an app comparing personal loans,100000,,,
+gold_applicant-0016,gold_applicant,Rohit,+910418942328,Bengaluru,English,applicant,False,app,gold_loan_application,,,phone_verified,1440,2025-12-31T12:00:00+00:00
+loan_seeker-0017,loan_seeker,Prakash,+910870652470,Kochi,Hindi,aggregator_shared,True,aggregator,aggregator,compared personal loan rates on an aggregator site,100000,,,
+gold_applicant-0018,gold_applicant,Pooja,+910858733577,Chennai,English,applicant,False,website,gold_loan_application,,,appraisal_slot_page,90,2026-01-01T10:30:00+00:00
+loan_seeker-0019,loan_seeker,Lakshmi,+910279119896,Hubballi,Kannada,aggregator_shared,False,aggregator,aggregator,asked for loan offers on a comparison site,400000,,,

@@ -67,8 +67,41 @@ def test_record_opt_out_ok():
     assert len(server.OPT_OUTS) == 1
 
 
-def test_get_customer_context_not_available_until_phase_2():
+def test_get_customer_context_missing_crm_returns_clear_error(monkeypatch, tmp_path):
+    monkeypatch.setenv("CRM_DB_PATH", str(tmp_path / "does_not_exist.sqlite"))
     req = server.CustomerContextRequest(lead_id="gold_applicant-0001")
+    result = server.get_customer_context_endpoint(req)
+    assert result["ok"] is False
+
+
+def test_get_customer_context_reads_real_crm(monkeypatch, tmp_path):
+    from data.build_crm import build_crm
+    from data.generate_leads import generate_leads, write_outputs
+
+    records = generate_leads(n=4, seed=1)
+    write_outputs(records, str(tmp_path))
+    db_path = tmp_path / "crm.sqlite"
+    build_crm(str(tmp_path / "leads.jsonl"), str(db_path))
+    monkeypatch.setenv("CRM_DB_PATH", str(db_path))
+
+    lead_id = records[0]["lead"]["lead_id"]
+    req = server.CustomerContextRequest(lead_id=lead_id)
+    result = server.get_customer_context_endpoint(req)
+    assert result["ok"] is True
+    assert result["customer"]["lead_id"] == lead_id
+
+
+def test_get_customer_context_unknown_lead_id(monkeypatch, tmp_path):
+    from data.build_crm import build_crm
+    from data.generate_leads import generate_leads, write_outputs
+
+    records = generate_leads(n=2, seed=1)
+    write_outputs(records, str(tmp_path))
+    db_path = tmp_path / "crm.sqlite"
+    build_crm(str(tmp_path / "leads.jsonl"), str(db_path))
+    monkeypatch.setenv("CRM_DB_PATH", str(db_path))
+
+    req = server.CustomerContextRequest(lead_id="does-not-exist-0000")
     result = server.get_customer_context_endpoint(req)
     assert result["ok"] is False
 
