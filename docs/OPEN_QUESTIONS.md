@@ -30,3 +30,14 @@ something the brief got wrong or doesn't know — don't guess, ask KC.
    `llm.py` and `config.py` will need to be added in Phase 4 to follow 5.5.
    **(ask Karta — confirm it's fine to add these two files in Phase 4 even
    though they're not in the Part 4.1 tree)**
+
+10. Added `agent/prompt.py` in Phase 3, also not in the Part 4.1 tree.
+   Part 5.4 says to "inject `agent/lender_facts.md`" into each prompt at a
+   `{{lender_facts}}` marker, and Phase 3's done-when criteria needs a test
+   that renders the prompt with dynamic variables resolved — both need a
+   small renderer to exist somewhere. `agent/prompt.py` resolves
+   `{{lender_facts}}` (identical every call) and then the per-call dynamic
+   variables from `data/loader.py`'s `dynamic_variables()`. Phase 4's
+   `simulation/agent_runner.py` should import and reuse this rather than
+   re-implementing the same logic. **(ask Karta — confirm this is fine; no
+   action needed otherwise)**
