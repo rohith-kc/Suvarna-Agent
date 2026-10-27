@@ -1,4 +1,221 @@
 {
-  "_comment": "STUB — Phase 0 scaffold only. Built in Phase 1 (CLAUDE.md Part 5.2): ElevenLabs webhook-tool definitions (name, description, URL placeholder, method, headers, parameters).",
-  "tools": []
+  "_comment": "ElevenLabs webhook-tool definitions (CLAUDE.md Part 5.2). Each entry under \"tools\" is a full request body for POST /v1/convai/tools (per ElevenLabs' tool-create API, checked Oct 2026). Descriptions are written to steer WHEN the model calls each tool, per CLAUDE.md Part 5.2. PLACEHOLDERS KC must fill in before using these: (1) every api_schema.url ('https://REPLACE_WITH_TOOLS_SERVER_URL' -> the deployed tools server from Phase 7), (2) the X-Tool-Secret header's secret_id -> an ElevenLabs workspace Secret holding the TOOL_SECRET value from .env.",
+  "tools": [
+    {
+      "tool_config": {
+        "type": "webhook",
+        "name": "calculate_eligibility",
+        "description": "Call this once the customer has told you roughly how many grams of gold they have (or tola, if they used that unit), and the karat if known. Never calculate or guess a loan amount yourself — always call this tool and speak only the range it returns, exactly as say_to_customer phrases it.",
+        "api_schema": {
+          "url": "https://REPLACE_WITH_TOOLS_SERVER_URL/calculate_eligibility",
+          "method": "POST",
+          "request_headers": {
+            "X-Tool-Secret": { "secret_id": "REPLACE_WITH_TOOL_SECRET_ID" },
+            "Content-Type": "application/json"
+          },
+          "request_body_schema": {
+            "type": "object",
+            "required": ["grams"],
+            "properties": {
+              "grams": {
+                "type": "number",
+                "description": "How many grams of gold the customer has, as they described it. If they gave tola, still pass the number here and set unit to 'tola'; never convert it yourself."
+              },
+              "karat": {
+                "type": "integer",
+                "description": "Purity in karat, if the customer mentioned it. Defaults to 22 (the common case) if unknown.",
+                "enum": [18, 20, 22, 24]
+              },
+              "repayment_type": {
+                "type": "string",
+                "description": "Whether the customer wants to repay monthly or as one lump sum at the end (bullet). Defaults to monthly.",
+                "enum": ["monthly", "bullet"]
+              },
+              "has_stones": {
+                "type": "boolean",
+                "description": "Whether the jewellery has stones or other non-gold material set into it. Defaults to false."
+              },
+              "existing_loan": {
+                "type": "number",
+                "description": "The outstanding amount on an existing gold loan with us, if any (for a top-up). Defaults to 0."
+              },
+              "unit": {
+                "type": "string",
+                "description": "The unit the customer's number is in. Defaults to gram.",
+                "enum": ["gram", "tola"]
+              }
+            }
+          },
+          "response_body_schema": {
+            "type": "object",
+            "description": "ok; low/high (rupees); low_spoken/high_spoken (Indian-English words); say_to_customer (speak this verbatim); assumptions; topup_available_low/high if existing_loan was given."
+          }
+        },
+        "execution_mode": "immediate"
+      }
+    },
+    {
+      "tool_config": {
+        "type": "webhook",
+        "name": "book_appraisal",
+        "description": "Call this once the customer has agreed to a specific appraisal slot and mode (branch or doorstep). Confirms the booking and returns a confirmation id — read it back to the customer. If doorstep isn't offered, the tool will say so; don't promise it beforehand.",
+        "api_schema": {
+          "url": "https://REPLACE_WITH_TOOLS_SERVER_URL/book_appraisal",
+          "method": "POST",
+          "request_headers": {
+            "X-Tool-Secret": { "secret_id": "REPLACE_WITH_TOOL_SECRET_ID" },
+            "Content-Type": "application/json"
+          },
+          "request_body_schema": {
+            "type": "object",
+            "required": ["customer_name", "mode", "slot"],
+            "properties": {
+              "customer_name": { "type": "string", "description": "The confirmed customer's name." },
+              "mode": {
+                "type": "string",
+                "description": "How the appraisal will happen.",
+                "enum": ["branch", "doorstep"]
+              },
+              "slot": {
+                "type": "string",
+                "description": "The day and time the customer agreed to, in their own words (e.g. 'Saturday morning')."
+              }
+            }
+          },
+          "response_body_schema": {
+            "type": "object",
+            "description": "ok; confirmation_id to read back to the customer; mode; slot. ok is false with an error if the mode isn't available."
+          }
+        },
+        "execution_mode": "immediate"
+      }
+    },
+    {
+      "tool_config": {
+        "type": "webhook",
+        "name": "send_whatsapp_summary",
+        "description": "Call this after the customer has clearly agreed (a yes/no answer, not a vague 'hmm') to receive a WhatsApp message — for example the eligibility range, or a documents checklist. Always confirm consent with a direct question before calling this.",
+        "api_schema": {
+          "url": "https://REPLACE_WITH_TOOLS_SERVER_URL/send_whatsapp_summary",
+          "method": "POST",
+          "request_headers": {
+            "X-Tool-Secret": { "secret_id": "REPLACE_WITH_TOOL_SECRET_ID" },
+            "Content-Type": "application/json"
+          },
+          "request_body_schema": {
+            "type": "object",
+            "required": ["customer_name", "summary"],
+            "properties": {
+              "customer_name": { "type": "string", "description": "The confirmed customer's name." },
+              "summary": {
+                "type": "string",
+                "description": "A short plain-text summary to send, using only facts already given to the customer on this call (e.g. the eligibility range from calculate_eligibility, or the documents list from the lender facts)."
+              }
+            }
+          },
+          "response_body_schema": {
+            "type": "object",
+            "description": "ok: true once the message is queued."
+          }
+        },
+        "execution_mode": "immediate"
+      }
+    },
+    {
+      "tool_config": {
+        "type": "webhook",
+        "name": "schedule_callback",
+        "description": "Call this when the customer asks for a human, sounds distressed or confused, raises something outside this call's scope (another loan, a complaint, a dispute), asks about a rate or fee not in the lender facts, or asks to be called back at a specific time. Never promise a callback without calling this tool.",
+        "api_schema": {
+          "url": "https://REPLACE_WITH_TOOLS_SERVER_URL/schedule_callback",
+          "method": "POST",
+          "request_headers": {
+            "X-Tool-Secret": { "secret_id": "REPLACE_WITH_TOOL_SECRET_ID" },
+            "Content-Type": "application/json"
+          },
+          "request_body_schema": {
+            "type": "object",
+            "required": ["customer_name", "when", "reason"],
+            "properties": {
+              "customer_name": { "type": "string", "description": "The confirmed customer's name." },
+              "when": {
+                "type": "string",
+                "description": "When the customer wants to be called back, in their own words (e.g. 'tomorrow evening')."
+              },
+              "reason": {
+                "type": "string",
+                "description": "Why a human needs to call back, in a few words (e.g. 'asked about top-up on existing loan')."
+              }
+            }
+          },
+          "response_body_schema": {
+            "type": "object",
+            "description": "ok: true once the callback is scheduled."
+          }
+        },
+        "execution_mode": "immediate"
+      }
+    },
+    {
+      "tool_config": {
+        "type": "webhook",
+        "name": "record_opt_out",
+        "description": "Call this immediately when the customer asks to stop being called, says not to call again, or otherwise opts out — in any words. Say one short, polite closing line and end the call right after calling this tool. Do not continue asking questions once this is called.",
+        "api_schema": {
+          "url": "https://REPLACE_WITH_TOOLS_SERVER_URL/record_opt_out",
+          "method": "POST",
+          "request_headers": {
+            "X-Tool-Secret": { "secret_id": "REPLACE_WITH_TOOL_SECRET_ID" },
+            "Content-Type": "application/json"
+          },
+          "request_body_schema": {
+            "type": "object",
+            "required": ["customer_name", "reason"],
+            "properties": {
+              "customer_name": { "type": "string", "description": "The confirmed customer's name, or 'unknown' if identity wasn't confirmed." },
+              "reason": {
+                "type": "string",
+                "description": "What the customer said, in their own words or a short paraphrase."
+              }
+            }
+          },
+          "response_body_schema": {
+            "type": "object",
+            "description": "ok: true once the opt-out is recorded."
+          }
+        },
+        "execution_mode": "immediate"
+      }
+    },
+    {
+      "tool_config": {
+        "type": "webhook",
+        "name": "get_customer_context",
+        "description": "Call this once, at the very start of the call, right after confirming identity and before asking anything else, to look up what this customer has already done. Use the notes and history only to avoid repeating questions the customer has already answered elsewhere — never read the history aloud verbatim.",
+        "api_schema": {
+          "url": "https://REPLACE_WITH_TOOLS_SERVER_URL/get_customer_context",
+          "method": "POST",
+          "request_headers": {
+            "X-Tool-Secret": { "secret_id": "REPLACE_WITH_TOOL_SECRET_ID" },
+            "Content-Type": "application/json"
+          },
+          "request_body_schema": {
+            "type": "object",
+            "required": ["lead_id"],
+            "properties": {
+              "lead_id": {
+                "type": "string",
+                "description": "The lead id for this call, supplied as a dynamic variable — never ask the customer for this."
+              }
+            }
+          },
+          "response_body_schema": {
+            "type": "object",
+            "description": "ok; the customer's visible CRM record and history (enquiries/applications, prior call attempts, notes, existing loans). Never contains hidden truth fields."
+          }
+        },
+        "execution_mode": "immediate"
+      }
+    }
+  ]
 }

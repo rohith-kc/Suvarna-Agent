@@ -1,9 +1,128 @@
-"""STUB — Phase 0 scaffold only.
+"""Tests for tools/server.py.
 
-Real tests (auth, bad inputs, event log) are written in Phase 1, per
-CLAUDE.md Part 5.2 and 5.6.
+Calls the FastAPI endpoint functions directly (not over HTTP) so we don't
+need to add an HTTP test client dependency (httpx) beyond the approved
+stack (CLAUDE.md Part 2 rule 13). The real HTTP path is checked manually
+with curl per Phase 1's "done when" criteria in CLAUDE.md Part 6.
 """
 
+import json
 
-def test_placeholder():
-    assert True
+import pytest
+
+import tools.server as server
+
+
+@pytest.fixture(autouse=True)
+def _reset_state(monkeypatch, tmp_path):
+    server.OPT_OUTS.clear()
+    server.SCHEDULED_CALLBACKS.clear()
+    server.SENT_WHATSAPP_MESSAGES.clear()
+    monkeypatch.setattr(server, "EVENTS_LOG_PATH", str(tmp_path / "events.jsonl"))
+    monkeypatch.delenv("TOOL_SECRET", raising=False)
+
+
+def test_health():
+    assert server.health() == {"ok": True}
+
+
+def test_calculate_eligibility_endpoint_delegates_to_pure_function():
+    req = server.EligibilityRequest(grams=20, karat=22)
+    result = server.calculate_eligibility_endpoint(req)
+    assert result["ok"] is True
+    assert result["high"] == 200000
+
+
+def test_book_appraisal_branch_ok():
+    req = server.BookAppraisalRequest(customer_name="Ramesh", mode="branch", slot="Saturday morning")
+    result = server.book_appraisal_endpoint(req)
+    assert result["ok"] is True
+    assert "confirmation_id" in result
+
+
+def test_book_appraisal_refuses_doorstep_when_not_offered():
+    req = server.BookAppraisalRequest(customer_name="Ramesh", mode="doorstep", slot="Saturday morning")
+    result = server.book_appraisal_endpoint(req)
+    assert result["ok"] is False
+
+
+def test_send_whatsapp_summary_ok():
+    req = server.WhatsappRequest(customer_name="Ramesh", summary="Documents checklist")
+    result = server.send_whatsapp_summary_endpoint(req)
+    assert result["ok"] is True
+    assert server.SENT_WHATSAPP_MESSAGES == [{"customer_name": "Ramesh", "summary": "Documents checklist"}]
+
+
+def test_schedule_callback_ok():
+    req = server.CallbackRequest(customer_name="Ramesh", when="tomorrow 5pm", reason="wants a human")
+    result = server.schedule_callback_endpoint(req)
+    assert result["ok"] is True
+    assert len(server.SCHEDULED_CALLBACKS) == 1
+
+
+def test_record_opt_out_ok():
+    req = server.OptOutRequest(customer_name="Ramesh", reason="stop calling me")
+    result = server.record_opt_out_endpoint(req)
+    assert result["ok"] is True
+    assert len(server.OPT_OUTS) == 1
+
+
+def test_get_customer_context_not_available_until_phase_2():
+    req = server.CustomerContextRequest(lead_id="gold_applicant-0001")
+    result = server.get_customer_context_endpoint(req)
+    assert result["ok"] is False
+
+
+def test_verify_tool_secret_skips_check_when_unset(monkeypatch):
+    monkeypatch.delenv("TOOL_SECRET", raising=False)
+    # Should not raise, regardless of header value.
+    server.verify_tool_secret(x_tool_secret=None)
+    server.verify_tool_secret(x_tool_secret="anything")
+
+
+def test_verify_tool_secret_rejects_missing_header_when_set(monkeypatch):
+    monkeypatch.setenv("TOOL_SECRET", "s3cret")
+    from fastapi import HTTPException
+
+    with pytest.raises(HTTPException):
+        server.verify_tool_secret(x_tool_secret=None)
+
+
+def test_verify_tool_secret_rejects_wrong_header_when_set(monkeypatch):
+    monkeypatch.setenv("TOOL_SECRET", "s3cret")
+    from fastapi import HTTPException
+
+    with pytest.raises(HTTPException):
+        server.verify_tool_secret(x_tool_secret="wrong")
+
+
+def test_verify_tool_secret_accepts_correct_header(monkeypatch):
+    monkeypatch.setenv("TOOL_SECRET", "s3cret")
+    server.verify_tool_secret(x_tool_secret="s3cret")  # should not raise
+
+
+def test_every_tool_endpoint_is_protected_by_the_secret_dependency():
+    protected_paths = {
+        "/calculate_eligibility", "/book_appraisal", "/send_whatsapp_summary",
+        "/schedule_callback", "/record_opt_out", "/get_customer_context",
+    }
+    for route in server.app.routes:
+        if getattr(route, "path", None) in protected_paths:
+            dep_funcs = [d.call for d in route.dependant.dependencies]
+            assert server.verify_tool_secret in dep_funcs
+
+
+def test_events_are_logged_to_jsonl(tmp_path, monkeypatch):
+    log_path = tmp_path / "events.jsonl"
+    monkeypatch.setattr(server, "EVENTS_LOG_PATH", str(log_path))
+
+    req = server.EligibilityRequest(grams=20, karat=22)
+    server.calculate_eligibility_endpoint(req)
+
+    lines = log_path.read_text(encoding="utf-8").strip().splitlines()
+    assert len(lines) == 1
+    event = json.loads(lines[0])
+    assert event["tool"] == "calculate_eligibility"
+    assert "timestamp" in event
+    assert event["arguments"]["grams"] == 20
+    assert event["result"]["ok"] is True
