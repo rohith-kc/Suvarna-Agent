@@ -69,6 +69,20 @@ something the brief got wrong or doesn't know — don't guess, ask KC.
    `amount_needed > 1.15 * eligible_amount`, UC2 now expects
    `whatsapp_sent`.
 
+14. The free Gemini tier's actual daily quota for `gemini-flash-lite-latest`
+   is lower than our own `MAX_REQUESTS_PER_DAY` safety cap (set to 5000 for
+   this run) and ran out partway through the very first Phase 5 baseline
+   run (60 calls): 22 of 60 calls hit a sustained 429 that outlasted
+   `simulation/llm.py`'s retries (6 attempts, up to 30s backoff), and a
+   follow-up 10-call run later the same day failed 10/10 immediately.
+   AI Studio's quota page (https://aistudio.google.com/rate-limit) is the
+   only place the real number is shown per Part 0 rule 5, and I can't open
+   KC's account. Rough budget observed: about 40-50 real calls/day before
+   it runs out. **(ask Karta — check the real number in AI Studio; decide
+   whether to wait for the daily reset, add a GROQ_API_KEY as a second
+   free-tier provider, or move to a paid key, before continuing Phase 5's
+   baseline runs)**
+
 12. Gemini's free-tier model names moved on from `gemini-2.5-flash`
    (404s: "no longer available to new users, use gemini-3.8-flash") to a
    `-latest`/`-lite-latest` alias scheme. `gemini-flash-latest` also hit a
