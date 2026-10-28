@@ -34,7 +34,9 @@ def _funnel(results):
 def _render_html(results):
     n = len(results)
     pass_counts = Counter(r["verdict"]["pass_result"] for r in results)
-    guardrail_pass = sum(1 for r in results if all(r["verdict"]["guardrails"].values()))
+    guardrail_pass = sum(
+        1 for r in results if r["verdict"]["guardrails"] and all(r["verdict"]["guardrails"].values())
+    )
     avg_turns = (sum(r["turns"] for r in results) / n) if n else 0
     funnel = _funnel(results)
 
@@ -71,7 +73,7 @@ def _render_html(results):
         lines = "".join(
             f"<p><b>{html.escape(t['speaker'])}:</b> {html.escape(t['text'])}</p>"
             for t in r["transcript"]
-        )
+        ) or (f"<p><i>{html.escape(r['error'])}</i></p>" if r.get("error") else "")
         worst_html += (
             f"<details><summary>{html.escape(r['lead_id'])} — {r['verdict']['pass_result']} "
             f"(outcome: {html.escape(r['verdict']['outcome'])}, "

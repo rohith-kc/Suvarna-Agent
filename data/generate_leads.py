@@ -296,6 +296,18 @@ def build_lead_from_scenario(scenario, seed=0):
     truth = dict(base["truth"])
     truth.update(scenario.get("truth_overrides") or {})
 
+    # A scenario that overrides persona must keep answers_phone/right_person
+    # consistent with it (_make_lead derives these from persona too) -
+    # otherwise a wrong_person/silent_no_answer scenario keeps the stale
+    # flags from its randomly generated base lead, unless the scenario
+    # itself overrides those fields explicitly.
+    overrides = scenario.get("truth_overrides") or {}
+    if "persona" in overrides:
+        if "answers_phone" not in overrides:
+            truth["answers_phone"] = truth["persona"] != "silent_no_answer"
+        if "right_person" not in overrides:
+            truth["right_person"] = truth["persona"] != "wrong_person"
+
     if truth.get("owns_gold"):
         elig = calculate_eligibility(
             grams=truth.get("grams", 0), karat=truth.get("purity_karat", 22),

@@ -168,20 +168,25 @@ def run_call(lead, llm_client, first_message_text, personas=None):
             transcript.append({"speaker": "agent", "text": action["say"]})
 
             tool = action.get("tool")
-            if not tool:
-                break
+            if tool:
+                result = _execute_tool(tool["name"], tool.get("args", {}))
+                tool_calls.append({"name": tool["name"], "args": tool.get("args", {}), "result": result})
+                agent_messages.append({
+                    "role": "user",
+                    "content": (
+                        f"[Tool result for {tool['name']}, not spoken to the customer] "
+                        f"{json.dumps(result)}"
+                    ),
+                })
 
-            result = _execute_tool(tool["name"], tool.get("args", {}))
-            tool_calls.append({"name": tool["name"], "args": tool.get("args", {}), "result": result})
-            agent_messages.append({
-                "role": "user",
-                "content": (
-                    f"[Tool result for {tool['name']}, not spoken to the customer] "
-                    f"{json.dumps(result)}"
-                ),
-            })
-
-            if tool["name"] in TERMINAL_TOOLS:
+            # Stop the chain once the agent has said it's done, even if the
+            # tool it just called isn't one of the hard-coded TERMINAL_TOOLS
+            # (schedule_callback, book_appraisal, send_whatsapp_summary can
+            # all legitimately end a call too) - otherwise the loop asks
+            # the model for a pointless extra turn after it already said
+            # goodbye, which tends to come back as a blank, tts_safe-
+            # failing line.
+            if action.get("end_call") or not tool or tool["name"] in TERMINAL_TOOLS:
                 break
 
         tool_name = (action.get("tool") or {}).get("name") if action else None

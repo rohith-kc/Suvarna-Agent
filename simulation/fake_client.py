@@ -8,11 +8,24 @@ agent_runner.py threads tool-result messages into the conversation.
 """
 
 import json
+import re
+
+_PERSONA_RE = re.compile(r"persona:\s*(\w+)")
+_HANDOFF_PERSONAS = {"busy", "wants_human", "confused_elderly"}
 
 
 class FakeClient:
     """Same complete(role, messages, json_schema=None) interface as
-    simulation/llm.py."""
+    simulation/llm.py.
+
+    Mostly a generic content-matched happy-path script (the pipeline, not
+    scenario fidelity, is what --dry-run/CI need to exercise - CLAUDE.md
+    Part 5.5). It branches on persona for wrong_person/silent_no_answer/
+    busy/wants_human/confused_elderly specifically, because those personas
+    exercise judge.py guardrail checks (identity_before_details,
+    handoff_when_needed) that a generic happy path would trip for the
+    wrong reason.
+    """
 
     def complete(self, role, messages, json_schema=None):
         if role == "customer":
@@ -27,8 +40,19 @@ class FakeClient:
     def _last_content(messages):
         return messages[-1]["content"].lower() if messages else ""
 
+    @staticmethod
+    def _persona(messages):
+        system = messages[0]["content"] if messages and messages[0]["role"] == "system" else ""
+        match = _PERSONA_RE.search(system.lower())
+        return match.group(1) if match else ""
+
     def _customer_line(self, messages):
+        persona = self._persona(messages)
         last = self._last_content(messages)
+        if persona == "wrong_person" and ("speaking with" in last or "am i speaking" in last):
+            return json.dumps({"say": "He's not here right now, who is this and what is this about?"})
+        if persona in _HANDOFF_PERSONAS and ("speaking with" in last or "am i speaking" in last):
+            return json.dumps({"say": "I'm quite busy right now, can someone call me back later?"})
         if "book" in last and ("appraisal" in last or "slot" in last):
             return json.dumps({"say": "Saturday morning works. Thank you, goodbye. [HANGUP]"})
         if "still looking" in last or "did you get what you needed" in last:
@@ -41,6 +65,15 @@ class FakeClient:
 
     def _agent_line(self, messages):
         last = self._last_content(messages)
+        if "call" in last and ("busy" in last or "later" in last or "call me back" in last):
+            return json.dumps({
+                "say": "Of course, I'll have someone call you back at a more convenient time.",
+                "tool": {
+                    "name": "schedule_callback",
+                    "args": {"customer_name": "Test Customer", "when": "later", "reason": "requested callback"},
+                },
+                "end_call": True,
+            })
         if "[tool result" in last and "calculate_eligibility" in last:
             return json.dumps({
                 "say": "Based on what you've told me, you may be eligible for a range. "

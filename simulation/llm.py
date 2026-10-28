@@ -148,10 +148,18 @@ def _rate_limiter_for(config):
     return _rate_limiters[key]
 
 
-def complete(role, messages, json_schema=None, config=None, max_retries=3):
+MAX_BACKOFF_SECONDS = 30
+
+
+def complete(role, messages, json_schema=None, config=None, max_retries=6):
     """role is "agent", "customer", or "judge". Returns raw text; callers
     that need JSON parse and validate it themselves (CLAUDE.md Part 5.5's
     JSON action protocol handles its own retry-on-invalid-JSON).
+
+    max_retries defaults to 6, not 3: free-tier RPM limits (Gemini's exact
+    figure is per-project, shown only in AI Studio, not published generally
+    - docs/OPEN_QUESTIONS.md #12) reset on a rolling minute window, and a
+    429 often needs tens of seconds, not a couple of seconds, to clear.
     """
     config = config or Config.from_env()
     if config.provider not in _PROVIDERS:
@@ -175,14 +183,14 @@ def complete(role, messages, json_schema=None, config=None, max_retries=3):
             status = exc.response.status_code if exc.response is not None else None
             if status in retryable_statuses and attempt < max_retries - 1:
                 time.sleep(backoff)
-                backoff *= 2
+                backoff = min(backoff * 2, MAX_BACKOFF_SECONDS)
                 continue
             raise
         except (requests.Timeout, requests.ConnectionError) as exc:
             last_exc = exc
             if attempt < max_retries - 1:
                 time.sleep(backoff)
-                backoff *= 2
+                backoff = min(backoff * 2, MAX_BACKOFF_SECONDS)
                 continue
             raise
     raise last_exc

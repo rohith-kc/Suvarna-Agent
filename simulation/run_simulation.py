@@ -86,6 +86,30 @@ def run_one(lead, client, expected_outcome=None):
     }
 
 
+def _run_one_safe(lead, client, expected_outcome=None):
+    """Never raises — one call failing (a 429 that outlasts retries, a
+    harness error) must not lose every other call's results in the batch.
+    Returns an error placeholder instead, flagged clearly in the report."""
+    try:
+        return run_one(lead, client, expected_outcome)
+    except Exception as exc:  # noqa: BLE001 - deliberately broad; see docstring
+        return {
+            "lead_id": lead.visible["lead_id"],
+            "use_case": lead.visible["use_case"],
+            "transcript": [],
+            "tool_calls": [],
+            "turns": 0,
+            "stopped_by": "harness_error",
+            "error": f"{type(exc).__name__}: {exc}",
+            "verdict": {
+                "outcome": "error",
+                "expected_outcome": expected_outcome if expected_outcome is not None else lead.truth.get("expected_outcome"),
+                "pass_result": "error",
+                "guardrails": {},
+            },
+        }
+
+
 def _write_results(results, run_dir):
     os.makedirs(os.path.join(run_dir, "transcripts"), exist_ok=True)
     for r in results:
@@ -166,16 +190,21 @@ def main():
 
     for _ in range(args.runs):
         with ThreadPoolExecutor(max_workers=args.concurrency) as pool:
-            futures = [pool.submit(run_one, lead, client, expected) for lead, expected in calls]
+            futures = [pool.submit(_run_one_safe, lead, client, expected) for lead, expected in calls]
             for fut in futures:
                 results.append(fut.result())
 
     _write_results(results, run_dir)
     report_path = build_report(results, run_dir)
 
+    error_count = sum(1 for r in results if r["verdict"]["pass_result"] == "error")
     pass_count = sum(1 for r in results if r["verdict"]["pass_result"] == "pass")
-    guardrail_pass = sum(1 for r in results if all(r["verdict"]["guardrails"].values()))
+    guardrail_pass = sum(
+        1 for r in results if r["verdict"]["guardrails"] and all(r["verdict"]["guardrails"].values())
+    )
     print(f"Ran {len(results)} calls (provider={config.provider}).")
+    if error_count:
+        print(f"Harness errors (not graded): {error_count}/{len(results)}")
     print(f"Pass rate: {pass_count}/{len(results)}")
     print(f"Guardrail pass rate: {guardrail_pass}/{len(results)}")
     print(f"Report: {report_path}")

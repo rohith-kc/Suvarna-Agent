@@ -9,7 +9,7 @@ import re
 
 import pytest
 
-from data.generate_leads import compute_expected_outcome, generate_leads
+from data.generate_leads import build_lead_from_scenario, compute_expected_outcome, generate_leads
 
 PHONE_RE = re.compile(r"^\+910\d{9}$")
 
@@ -169,3 +169,41 @@ def test_uc1_soft_personas_whatsapp_sent(persona):
 def test_uc1_default_appraisal_booked():
     truth = {"owns_gold": True, "amount_needed": 100000, "eligible_amount": 200000}
     assert compute_expected_outcome("loan_seeker", "cooperative", truth) == "appraisal_booked"
+
+
+def test_scenario_persona_override_keeps_right_person_consistent():
+    # A scenario overriding persona to wrong_person must also flip
+    # right_person, or judge.derive_outcome's truth-based fallback for
+    # wrong_person/no_answer would use stale data from the random base lead.
+    scenario = {
+        "id": "test_wrong_person",
+        "use_case": "gold_applicant",
+        "truth_overrides": {"persona": "wrong_person", "owns_gold": True},
+        "expected_outcome": "wrong_person",
+    }
+    record = build_lead_from_scenario(scenario, seed=1)
+    assert record["truth"]["right_person"] is False
+    assert record["truth"]["answers_phone"] is True
+
+
+def test_scenario_persona_override_silent_no_answer_sets_answers_phone_false():
+    scenario = {
+        "id": "test_silent",
+        "use_case": "gold_applicant",
+        "truth_overrides": {"persona": "silent_no_answer", "owns_gold": True},
+        "expected_outcome": "no_answer",
+    }
+    record = build_lead_from_scenario(scenario, seed=1)
+    assert record["truth"]["answers_phone"] is False
+    assert record["truth"]["right_person"] is True
+
+
+def test_scenario_explicit_right_person_override_is_not_clobbered():
+    scenario = {
+        "id": "test_explicit",
+        "use_case": "gold_applicant",
+        "truth_overrides": {"persona": "wrong_person", "right_person": True, "owns_gold": True},
+        "expected_outcome": "wrong_person",
+    }
+    record = build_lead_from_scenario(scenario, seed=1)
+    assert record["truth"]["right_person"] is True

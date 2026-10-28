@@ -48,8 +48,15 @@ def build_system_prompt(lead, personas=None):
         f"Persona: {persona_name}. {persona.get('description', '')}\n"
         f"Behaviour: {persona.get('behaviour_rules', '')}\n\n"
         f"What actually happened (only you know this): {_truth_brief(lead)}\n\n"
-        "End the call by saying a short closing line followed by the exact "
-        f"token {HANGUP_TOKEN} once you are done, hang up, or opt out."
+        "End the call with a short closing line followed by the exact "
+        f"token {HANGUP_TOKEN}, but only once the conversation has "
+        "actually reached a natural end: the agent has given you a real "
+        "answer to what you just asked (for example, actually offered a "
+        "callback time, not merely said it will), the agent said its own "
+        "goodbye, or you are refusing to continue at all (an opt-out or "
+        "hostile persona). Never hang up in the same breath as a request "
+        "you are still waiting on an answer to — a real person waits to "
+        "hear the reply before hanging up."
     )
 
 
@@ -72,7 +79,16 @@ def _parse_customer_text(raw):
 
 
 def customer_reply(llm_client, lead, transcript, personas=None):
-    """Returns (text, hung_up)."""
+    """Returns (text, hung_up).
+
+    silent_no_answer is short-circuited here rather than left to the LLM:
+    "never reply with any content" isn't something a real LLM reliably
+    honours on its own, and this persona has no content to generate
+    anyway - it also saves an API call per turn.
+    """
+    if lead.truth.get("persona") == "silent_no_answer":
+        return "", True
+
     messages = _build_messages(lead, transcript, personas)
     raw = llm_client.complete("customer", messages)
     text = _parse_customer_text(raw)
