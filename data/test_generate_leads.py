@@ -126,6 +126,30 @@ def test_uc2_default_appraisal_booked():
     assert compute_expected_outcome("gold_applicant", "cooperative", truth) == "appraisal_booked"
 
 
+def test_uc2_amount_far_above_eligible_whatsapp_sent():
+    # KC's decision on docs/OPEN_QUESTIONS.md #13: UC2 gets a UC1-style
+    # amount-mismatch rule, but lands on whatsapp_sent, not not_a_fit —
+    # this customer already owns gold and already started an application.
+    truth = {
+        "true_blocker": "unsure_amount",
+        "owns_gold": True,
+        "amount_needed": 400000,
+        "eligible_amount": 200000,
+    }
+    assert compute_expected_outcome("gold_applicant", "cooperative", truth) == "whatsapp_sent"
+
+
+def test_uc2_amount_mismatch_rule_skipped_when_no_eligible_amount():
+    # eligible_amount 0 (no gold) must not trigger the mismatch rule.
+    truth = {
+        "true_blocker": "unsure_amount",
+        "owns_gold": False,
+        "amount_needed": 400000,
+        "eligible_amount": 0,
+    }
+    assert compute_expected_outcome("gold_applicant", "cooperative", truth) == "appraisal_booked"
+
+
 def test_uc1_no_gold_not_a_fit():
     truth = {"owns_gold": False, "amount_needed": 100000, "eligible_amount": 0}
     assert compute_expected_outcome("loan_seeker", "cooperative", truth) == "not_a_fit"

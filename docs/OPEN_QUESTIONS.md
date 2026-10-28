@@ -53,20 +53,21 @@ something the brief got wrong or doesn't know — don't guess, ask KC.
    read into `simulation/config.py` but not yet enforced. **(ask Karta —
    fine to leave as-is while on the free tier; revisit before paid use)**
 
-13. CLAUDE.md Part 5.3's `expected_outcome` rules give UC1 a `not_a_fit`
-   exception when `amount_needed` is far above `eligible_amount`, but
-   UC2's rules have no equivalent — a cooperative UC2 lead whose
-   `amount_needed` vastly exceeds what their gold supports still expects
-   `appraisal_booked`. Seen live in HUMAN GATE 4's real test call
-   (lead `gold_applicant-0014`: needed 400,000, eligible for ~225,000):
-   the agent sensibly pivoted to a WhatsApp summary instead of forcing a
-   booking, which is arguably the *better* behaviour — but the harness
-   scored it `fail` since `expected_outcome` says `appraisal_booked`
-   regardless. This looks like a genuine gap in the spec's UC2 rule, not
-   a bug in `compute_expected_outcome()` (which matches Part 5.3 exactly).
-   **(ask Karta — should UC2 get a UC1-style amount-mismatch exception
-   too? Not changed without a decision, since it affects what counts as
-   a pass)**
+13. **RESOLVED (2026-10-28).** CLAUDE.md Part 5.3's `expected_outcome`
+   rules gave UC1 a `not_a_fit` exception when `amount_needed` is far
+   above `eligible_amount`, but UC2 had no equivalent. Seen live in
+   HUMAN GATE 4's real test call (lead `gold_applicant-0014`: needed
+   400,000, eligible for ~225,000): the agent sensibly pivoted to a
+   WhatsApp summary instead of forcing a booking, but the harness scored
+   it `fail` since `expected_outcome` said `appraisal_booked` regardless.
+   KC's decision: add the exception to UC2 too, but land on
+   `whatsapp_sent` rather than `not_a_fit` — unlike UC1, this customer
+   already owns gold and already started an application, so the honest
+   outcome is still to keep them as a lead via WhatsApp, not end the
+   relationship. Implemented in `compute_expected_outcome()`
+   (`data/generate_leads.py`): when `eligible_amount > 0` and
+   `amount_needed > 1.15 * eligible_amount`, UC2 now expects
+   `whatsapp_sent`.
 
 12. Gemini's free-tier model names moved on from `gemini-2.5-flash`
    (404s: "no longer available to new users, use gemini-3.8-flash") to a

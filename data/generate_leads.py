@@ -146,6 +146,15 @@ def compute_expected_outcome(use_case, persona, truth):
         return "whatsapp_sent"
     if blocker == "rate_unclear":
         return "callback_scheduled"
+    # UC2 analogue of UC1's amount-mismatch rule (docs/OPEN_QUESTIONS.md #13,
+    # KC's decision): unlike UC1 this customer already owns gold and already
+    # started an application, so the honest outcome when the gold can't
+    # cover what they need is still whatsapp_sent (the range, to keep as a
+    # lead), not not_a_fit.
+    amount_needed = truth.get("amount_needed") or 0
+    eligible_amount = truth.get("eligible_amount") or 0
+    if eligible_amount > 0 and amount_needed > 1.15 * eligible_amount:
+        return "whatsapp_sent"
     if persona in _PERSONA_SOFT:
         return "whatsapp_sent"
     return "appraisal_booked"
