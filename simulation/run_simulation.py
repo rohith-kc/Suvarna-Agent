@@ -12,6 +12,7 @@ import hashlib
 import json
 import os
 import sys
+import tempfile
 import time
 from concurrent.futures import ThreadPoolExecutor
 
@@ -20,6 +21,7 @@ if __name__ == "__main__":
 
 import yaml
 
+from data.build_crm import build_crm_from_leads
 from data.compliance import is_callable
 from data.generate_leads import build_lead_from_scenario, generate_leads
 from data.loader import Lead, dynamic_variables
@@ -130,6 +132,18 @@ def _print_verbose(outcome):
     print(json.dumps(outcome["verdict"], indent=2))
 
 
+def _build_crm_for_this_run(leads_visible):
+    """get_customer_context looks a lead up by lead_id alone (CLAUDE.md
+    5.3a), but "gold_applicant-0000" names a different customer under
+    every seed - a CRM built once from one seed's leads.jsonl would
+    silently hand the agent a different lead's history whenever this run
+    uses another seed or a scenario lead_id. Build one fresh, scoped to
+    exactly the leads this run will actually call, every time."""
+    db_path = os.path.join(tempfile.gettempdir(), f"suvarna_crm_{os.getpid()}.sqlite")
+    build_crm_from_leads(leads_visible, db_path)
+    os.environ["CRM_DB_PATH"] = db_path
+
+
 def _sample_candidates(n, seed, use_case):
     records = generate_leads(n=max(n * 3, n), seed=seed)
     candidates = [Lead(visible=r["lead"], truth=r["truth"]) for r in records]
@@ -165,6 +179,7 @@ def main():
             print(f"lead_id {args.lead_id} not found with seed {args.seed}")
             return 1
         lead = Lead(visible=match["lead"], truth=match["truth"])
+        _build_crm_for_this_run([lead.visible])
         outcome = run_one(lead, client)
         if args.verbose:
             _print_verbose(outcome)
@@ -176,6 +191,7 @@ def main():
     else:
         n = 3 if args.dry_run else args.n
         calls = _sample_candidates(n, args.seed, args.use_case)
+    _build_crm_for_this_run([lead.visible for lead, _ in calls])
 
     if not args.dry_run and len(calls) > 20 and not args.yes:
         print(

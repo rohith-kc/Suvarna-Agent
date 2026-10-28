@@ -96,18 +96,31 @@ def _started_at_before(stopped_at_iso, rng):
 
 
 def build_crm(leads_path, db_path):
+    leads = []
+    with open(leads_path, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            leads.append(json.loads(line)["lead"])
+    build_crm_from_leads(leads, db_path)
+
+
+def build_crm_from_leads(leads, db_path):
+    """Same as build_crm(), but from an already-in-memory list of visible
+    lead dicts rather than a leads.jsonl file - lets a caller (e.g.
+    run_simulation.py) build a CRM that's guaranteed to match whatever
+    leads it actually sampled, regardless of seed (CLAUDE.md 5.3a: a
+    lead_id like "gold_applicant-0000" names a different customer under
+    each seed, so a CRM built from one seed's leads.jsonl would silently
+    return the wrong person's history for a run using another seed)."""
     if os.path.exists(db_path):
         os.remove(db_path)
     conn = sqlite3.connect(db_path)
     try:
         conn.executescript(SCHEMA)
-        with open(leads_path, "r", encoding="utf-8") as f:
-            for line in f:
-                line = line.strip()
-                if not line:
-                    continue
-                record = json.loads(line)
-                _insert_lead(conn, record["lead"])
+        for lead in leads:
+            _insert_lead(conn, lead)
         conn.commit()
     finally:
         conn.close()
