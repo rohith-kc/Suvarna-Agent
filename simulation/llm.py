@@ -79,7 +79,7 @@ def _complete_gemini(config, role, messages):
     model = _model_for_role(config, role)
     resp = requests.post(
         f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent",
-        params={"key": config.gemini_api_key},
+        headers={"x-goog-api-key": config.gemini_api_key, "content-type": "application/json"},
         json={"contents": contents, "systemInstruction": {"parts": [{"text": system}]}},
         timeout=60,
     )
@@ -163,6 +163,7 @@ def complete(role, messages, json_schema=None, config=None, max_retries=3):
     limiter = _rate_limiter_for(config)
     fn = _PROVIDERS[config.provider]
 
+    retryable_statuses = {429, 500, 502, 503, 504}
     backoff = 1
     last_exc = None
     for attempt in range(max_retries):
@@ -172,7 +173,14 @@ def complete(role, messages, json_schema=None, config=None, max_retries=3):
         except requests.HTTPError as exc:
             last_exc = exc
             status = exc.response.status_code if exc.response is not None else None
-            if status == 429 and attempt < max_retries - 1:
+            if status in retryable_statuses and attempt < max_retries - 1:
+                time.sleep(backoff)
+                backoff *= 2
+                continue
+            raise
+        except (requests.Timeout, requests.ConnectionError) as exc:
+            last_exc = exc
+            if attempt < max_retries - 1:
                 time.sleep(backoff)
                 backoff *= 2
                 continue

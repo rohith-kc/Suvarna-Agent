@@ -6,7 +6,7 @@ from data.generate_leads import generate_leads
 from data.loader import dynamic_variables, load_leads
 
 EXPECTED_KEYS = {
-    "customer_name", "agent_name", "lender_name", "use_case", "call_trigger",
+    "lead_id", "customer_name", "agent_name", "lender_name", "use_case", "call_trigger",
     "trigger_detail", "opening_line", "last_step_completed", "minutes_since_stop",
     "city", "preferred_language", "branch_name",
 }

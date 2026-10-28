@@ -89,7 +89,8 @@ question. Two attempts at most on any one objection, then offer an exit
 
 ## 8. Tools
 - get_customer_context: call once, at the very start, right after
-  identity is confirmed.
+  identity is confirmed, with lead_id set to {{lead_id}} (never ask the
+  customer for this).
 - calculate_eligibility: call once you have grams (and stones and karat if
   known). Never guess the result yourself.
 - book_appraisal: call once the customer agrees to a specific slot and

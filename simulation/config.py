@@ -8,6 +8,34 @@ Not in the Part 4.1 repository tree; flagged in docs/OPEN_QUESTIONS.md #9.
 import os
 from dataclasses import dataclass
 
+_DOTENV_LOADED = False
+
+
+def _load_dotenv():
+    """Minimal stdlib .env loader — no python-dotenv dependency (Part 2
+    rule 13). Does not override a variable already set in the real
+    environment. Silently does nothing if .env doesn't exist."""
+    global _DOTENV_LOADED
+    if _DOTENV_LOADED:
+        return
+    _DOTENV_LOADED = True
+
+    root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    path = os.path.join(root, ".env")
+    if not os.path.exists(path):
+        return
+
+    with open(path, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            key, _, value = line.partition("=")
+            key = key.strip()
+            value = value.strip()
+            if key and key not in os.environ:
+                os.environ[key] = value
+
 
 def _float(name, default):
     raw = os.environ.get(name)
@@ -36,6 +64,7 @@ class Config:
 
     @classmethod
     def from_env(cls):
+        _load_dotenv()
         return cls(
             provider=os.environ.get("LLM_PROVIDER", "fake") or "fake",
             anthropic_api_key=os.environ.get("ANTHROPIC_API_KEY", ""),

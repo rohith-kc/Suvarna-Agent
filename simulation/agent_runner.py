@@ -10,6 +10,7 @@ works the same way regardless of LLM_PROVIDER.
 """
 
 import json
+import os
 
 import tools.server as tools_server
 from agent.prompt import render
@@ -20,11 +21,43 @@ MAX_TURNS = 24
 MAX_TOOL_CHAIN = 3
 TERMINAL_TOOLS = {"record_opt_out"}
 
+TOOL_DEFINITIONS_PATH = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "tools", "tool_definitions.json"
+)
+
+
+def _load_tool_catalog_text():
+    """Builds a short "name(args): description" catalog from the single
+    source of truth (tools/tool_definitions.json) so a real LLM — unlike
+    the scripted FakeClient — knows the exact argument names each tool
+    expects, instead of guessing them."""
+    with open(TOOL_DEFINITIONS_PATH, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    lines = []
+    for entry in data["tools"]:
+        cfg = entry["tool_config"]
+        schema = cfg["api_schema"].get("request_body_schema", {})
+        props = schema.get("properties", {})
+        required = set(schema.get("required", []))
+        arg_bits = [
+            f"{name}: {prop.get('type', 'any')}{'' if name in required else ' (optional)'}"
+            for name, prop in props.items()
+        ]
+        args_text = ", ".join(arg_bits) if arg_bits else "no arguments"
+        lines.append(f"- {cfg['name']}({args_text}) — {cfg['description']}")
+    return "\n".join(lines)
+
+
+TOOL_CATALOG_TEXT = _load_tool_catalog_text()
+
 REPLY_FORMAT_FOOTER = (
-    "\n\n## Reply format (simulation only — the voice platform does not see this)\n"
+    "\n\n## Tools available (simulation only; exact argument names — use them precisely)\n"
+    f"{TOOL_CATALOG_TEXT}\n\n"
+    "## Reply format (simulation only — the voice platform does not see this)\n"
     "Reply with ONLY a JSON object, no other text before or after it: "
     '{"say": "<what you say out loud>", '
-    '"tool": null or {"name": "<tool_name>", "args": {...}}, '
+    '"tool": null or {"name": "<one of the tool names above>", "args": {<exactly the argument names listed for that tool>}}, '
     '"end_call": true or false}. '
     "Call at most one tool per reply."
 )
@@ -54,6 +87,19 @@ TOOL_FUNCTIONS = {
         tools_server.CustomerContextRequest, tools_server.get_customer_context_endpoint, args
     ),
 }
+
+
+def _execute_tool(name, args):
+    """Never raises — a real LLM occasionally calls a tool with the wrong
+    or missing arguments, and the agent should see a clear error (and
+    follow its own fallback instructions) rather than crash the harness."""
+    tool_fn = TOOL_FUNCTIONS.get(name)
+    if tool_fn is None:
+        return {"ok": False, "error": f"unknown tool: {name}"}
+    try:
+        return tool_fn(args)
+    except Exception as exc:  # noqa: BLE001 - deliberately broad; see docstring
+        return {"ok": False, "error": f"tool call failed: {exc}"}
 
 
 class HarnessError(Exception):
@@ -125,7 +171,7 @@ def run_call(lead, llm_client, first_message_text, personas=None):
             if not tool:
                 break
 
-            result = TOOL_FUNCTIONS[tool["name"]](tool.get("args", {}))
+            result = _execute_tool(tool["name"], tool.get("args", {}))
             tool_calls.append({"name": tool["name"], "args": tool.get("args", {}), "result": result})
             agent_messages.append({
                 "role": "user",

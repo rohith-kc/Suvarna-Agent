@@ -45,10 +45,36 @@ something the brief got wrong or doesn't know — don't guess, ask KC.
 11. Phase 4's cost guard (`run_simulation.py`, Part 5.5: "print an estimate
    before any run over 20 calls... using token counts") is only a
    call-count gate (>20 calls needs `--yes`), not a real token-based $
-   estimate. A true estimate needs each provider's current per-token
-   price, which Part 0 rule 5 says to verify in the provider's own docs
-   rather than hardcode from memory — not done yet since KC hasn't picked
-   a provider. `MAX_SIM_COST_USD` is read into `simulation/config.py` but
-   not yet enforced. **(ask Karta — once a provider is chosen in HUMAN
-   GATE 4, verify its current pricing and wire a real estimate before any
-   large paid run)**
+   estimate. A true estimate needs the provider's current per-token price,
+   which Part 0 rule 5 says to verify in the provider's own docs rather
+   than hardcode from memory. KC picked the free Gemini tier (HUMAN GATE
+   4), so cost is $0 for now, but this should be revisited with a real
+   estimate before switching to any paid provider. `MAX_SIM_COST_USD` is
+   read into `simulation/config.py` but not yet enforced. **(ask Karta —
+   fine to leave as-is while on the free tier; revisit before paid use)**
+
+13. CLAUDE.md Part 5.3's `expected_outcome` rules give UC1 a `not_a_fit`
+   exception when `amount_needed` is far above `eligible_amount`, but
+   UC2's rules have no equivalent — a cooperative UC2 lead whose
+   `amount_needed` vastly exceeds what their gold supports still expects
+   `appraisal_booked`. Seen live in HUMAN GATE 4's real test call
+   (lead `gold_applicant-0014`: needed 400,000, eligible for ~225,000):
+   the agent sensibly pivoted to a WhatsApp summary instead of forcing a
+   booking, which is arguably the *better* behaviour — but the harness
+   scored it `fail` since `expected_outcome` says `appraisal_booked`
+   regardless. This looks like a genuine gap in the spec's UC2 rule, not
+   a bug in `compute_expected_outcome()` (which matches Part 5.3 exactly).
+   **(ask Karta — should UC2 get a UC1-style amount-mismatch exception
+   too? Not changed without a decision, since it affects what counts as
+   a pass)**
+
+12. Gemini's free-tier model names moved on from `gemini-2.5-flash`
+   (404s: "no longer available to new users, use gemini-3.8-flash") to a
+   `-latest`/`-lite-latest` alias scheme. `gemini-flash-latest` also hit a
+   503 ("high demand") during HUMAN GATE 4's real test call; the working
+   model as of 2026-10-28 was `gemini-flash-lite-latest`. `simulation/llm.py`
+   now retries on 429/500/502/503/504 and timeouts, but if these aliases
+   shift again, re-check aistudio.google.com's own quickstart snippet
+   (the most reliable source — it showed the exact working model name and
+   current key format when docs search gave conflicting answers).
+   **(informational — no action needed unless models 404/503 again)**
