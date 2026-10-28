@@ -45,7 +45,7 @@ def _render_html(results):
     )
     outcome_rows = "".join(
         f"<tr><td>{html.escape(str(exp))}</td><td>{html.escape(str(act))}</td><td>{count}</td></tr>"
-        for (exp, act), count in sorted(outcome_matrix.items())
+        for (exp, act), count in sorted(outcome_matrix.items(), key=lambda item: (str(item[0][0]), str(item[0][1])))
     )
 
     guardrail_failures = [r for r in results if not all(r["verdict"]["guardrails"].values())]
@@ -59,12 +59,12 @@ def _render_html(results):
     uc2_results = [r for r in results if r.get("use_case") == "gold_applicant"]
     if uc2_results:
         blocker_counts = Counter(
-            (r["verdict"].get("expected_outcome"), r["verdict"].get("stopped_reason_found"))
+            (r["verdict"].get("expected_outcome") or "?", r["verdict"].get("stopped_reason_found") or "")
             for r in uc2_results
         )
         blocker_rows = "".join(
             f"<tr><td>{html.escape(str(a))}</td><td>{html.escape(str(b))}</td><td>{c}</td></tr>"
-            for (a, b), c in sorted(blocker_counts.items())
+            for (a, b), c in sorted(blocker_counts.items(), key=lambda item: (str(item[0][0]), str(item[0][1])))
         )
 
     failed_first = sorted(results, key=lambda r: r["verdict"]["pass_result"] == "pass")
