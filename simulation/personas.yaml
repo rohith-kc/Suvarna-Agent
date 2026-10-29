@@ -1,0 +1,6 @@
+# STUB — Phase 0 scaffold only.
+# Built in Phase 4 (CLAUDE.md Part 5.5): one entry per persona (description,
+# behaviour_rules, pass_check), matching the generator's persona list plus
+# the speech-failure personas from 5.4a H.
+
+personas: []

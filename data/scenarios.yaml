@@ -1,0 +1,6 @@
+# STUB — Phase 0 scaffold only.
+# Built in Phase 2 (CLAUDE.md Part 5.3a): at least 40 hand-written scenarios
+# (25 UC2, 15 UC1), each with id, name, use_case, lead_overrides,
+# truth_overrides, crm_overrides, customer_script, expected_outcome, must_not.
+
+scenarios: []

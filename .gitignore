@@ -1,0 +1,8 @@
+.env
+data/out/
+runs/
+*.sqlite
+events.jsonl
+__pycache__/
+.venv/
+*.pyc
