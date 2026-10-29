@@ -54,20 +54,37 @@
   }
   .wrap { max-width: 720px; margin: 0 auto; padding-block: 3rem 4rem; }
 
+  .hero { position: relative; isolation: isolate; }
+  .hero::before {
+    content: ""; position: absolute; top: -120px; left: 50%;
+    width: 620px; height: 480px; max-width: 140vw;
+    transform: translateX(-50%);
+    background: radial-gradient(ellipse at center, var(--gold) 0%, transparent 68%);
+    opacity: 0.16; filter: blur(36px); z-index: -1; pointer-events: none;
+  }
+
   .eyebrow {
     font-family: var(--font-mono);
     font-size: 12px;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--gold);
+    display: flex; align-items: center; gap: 0.55rem;
   }
+  .eyebrow svg { flex-shrink: 0; color: var(--gold); }
   h1 {
     font-family: var(--font-display);
     font-weight: 500;
     font-size: clamp(2.4rem, 7vw, 3.6rem);
     line-height: 1.05;
-    margin: 0.5rem 0 1rem;
+    margin: 0.5rem 0 0;
     text-wrap: balance;
+    background: linear-gradient(100deg, var(--fg) 45%, var(--gold) 115%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .rule {
+    width: 46px; height: 2px; margin: 1.1rem 0 1.25rem; border-radius: 2px;
+    background: linear-gradient(90deg, var(--gold), transparent);
   }
   .lede { font-size: 1.05rem; color: var(--fg-muted); max-width: 56ch; margin: 0 0 1.5rem; }
   .meta {
@@ -76,13 +93,23 @@
   }
   .meta b { color: var(--fg); font-weight: 500; }
 
+  .origin {
+    display: flex; gap: 1rem; align-items: flex-start;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+    padding: 1.25rem 1.4rem; margin: 2rem 0;
+  }
+  .origin .coin { flex-shrink: 0; color: var(--gold); margin-top: 0.15rem; }
+  .origin h2 { margin-bottom: 0.45rem; }
+  .origin p { margin: 0; font-size: 0.92rem; color: var(--fg-muted); }
+  .origin b { color: var(--fg); font-weight: 500; }
+
   .proof {
     display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px;
     margin: 2.5rem 0;
   }
   .proof-item {
-    background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
-    padding: 1rem 1.1rem; min-width: 0;
+    background: var(--surface); border: 1px solid var(--line); border-top: 2px solid var(--gold);
+    border-radius: 10px 10px 12px 12px; padding: 1rem 1.1rem; min-width: 0;
   }
   .proof-item .n { font-family: var(--font-mono); font-size: 11px; color: var(--gold); letter-spacing: 0.04em; }
   .proof-item p { margin: 0.35rem 0 0; font-size: 0.92rem; }
@@ -110,12 +137,18 @@
     padding: 1.75rem; text-align: center; margin: 2.5rem 0;
   }
   .cta-block p { color: var(--fg-muted); font-size: 0.92rem; margin: 0.5rem 0 1.25rem; }
+  .cta-actions { display: flex; gap: 0.7rem; justify-content: center; flex-wrap: wrap; }
   .cta-btn {
     display: inline-block; font-family: var(--font-body); font-weight: 600; font-size: 1rem;
     color: #1c1308; background: var(--gold); padding: 0.85rem 1.8rem; border-radius: 999px;
-    text-decoration: none; transition: opacity 0.15s ease;
+    text-decoration: none; transition: opacity 0.15s ease, transform 0.15s ease;
   }
-  .cta-btn:hover { opacity: 0.88; }
+  .cta-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+  .cta-btn.secondary {
+    color: var(--gold); background: transparent; border: 1.5px solid var(--gold);
+    padding: 0.8rem 1.6rem;
+  }
+  .cta-btn.secondary:hover { background: var(--gold-soft); opacity: 1; }
   .cta-note { font-family: var(--font-mono); font-size: 11px; color: var(--fg-muted); margin-top: 0.9rem !important; }
 
   .caveats { border-top: 1px solid var(--line); padding-top: 1.5rem; margin-top: 2.5rem; }
@@ -130,16 +163,43 @@
 
 <div class="wrap">
 
-  <div class="eyebrow">Suvarna Gold Finance — a fictional demo lender</div>
-  <h1>Meet Asha</h1>
-  <p class="lede">
-    Asha is a voice AI agent who calls customers who started a gold loan application and
-    stopped partway through. She isn't selling — she's finding out why they stopped, and
-    helping them finish if she can.
-  </p>
-  <div class="meta">
-    Built by <b>Rohith KC</b> for the Founding PM interview at <b>Karta AI</b>. Every lender
-    fact, rate and figure here is a labelled placeholder — nothing is a real product.
+  <div class="hero">
+    <div class="eyebrow">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.6"/>
+        <path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+      </svg>
+      Suvarna Gold Finance — a fictional demo lender
+    </div>
+    <h1>Meet Asha</h1>
+    <div class="rule"></div>
+    <p class="lede">
+      Asha is a voice AI agent who calls customers who started a gold loan application and
+      stopped partway through. She isn't selling — she's finding out why they stopped, and
+      helping them finish if she can.
+    </p>
+    <div class="meta">
+      Built by <b>Rohith KC</b> for the Founding PM interview at <b>Karta AI</b>. Every lender
+      fact, rate and figure here is a labelled placeholder — nothing is a real product.
+    </div>
+  </div>
+
+  <div class="origin">
+    <svg class="coin" width="38" height="38" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="24" cy="24" r="15" stroke="currentColor" stroke-width="2"/>
+      <circle cx="24" cy="24" r="9.5" stroke="currentColor" stroke-width="1.3" opacity="0.55"/>
+      <path d="M24 3v6M24 39v6M3 24h6M39 24h6M9 9l4.2 4.2M34.8 34.8l4.2 4.2M9 39l4.2-4.2M34.8 13.2l4.2-4.2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+    </svg>
+    <div>
+      <h2>Why "Suvarna"</h2>
+      <p>
+        <b>Suvarna</b> (सुवर्ण) is the Sanskrit word for gold — the same root Kannada, Hindi
+        and most Indian languages still use for it today. A fictional lender, named plainly
+        for what it lends against. <b>Asha</b>, the agent's name, means hope — short,
+        easy to say on a call, and a reminder that her job is to get someone unstuck, not
+        to sell them something.
+      </p>
+    </div>
   </div>
 
   <div class="proof">
@@ -168,8 +228,11 @@
   <div class="cta-block">
     <h2>Talk to her yourself</h2>
     <p>Pick any of these scenarios — or just be yourself — and have a real voice or text conversation with the live agent.</p>
-    <a class="cta-btn" href="https://suvarna-tools-server.onrender.com/demo" target="_blank" rel="noopener">Open the live demo</a>
-    <p class="cta-note">Opens in a new tab · needs microphone access for voice, or type instead</p>
+    <div class="cta-actions">
+      <a class="cta-btn" href="https://suvarna-tools-server.onrender.com/demo" target="_blank" rel="noopener">Open the live demo</a>
+      <a class="cta-btn secondary" href="https://github.com/rohith-kc/Suvarna-Agent" target="_blank" rel="noopener">View the code on GitHub</a>
+    </div>
+    <p class="cta-note">Demo opens in a new tab · needs microphone access for voice, or type instead</p>
   </div>
 
   <div class="caveats">
