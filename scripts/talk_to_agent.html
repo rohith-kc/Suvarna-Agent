@@ -2,37 +2,168 @@
 <html lang="en">
 <head>
 <meta charset="utf-8" />
-<title>Talk to Asha — Suvarna UC2 test cards</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Talk to Asha — Suvarna Gold Finance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
-  body { font-family: system-ui, sans-serif; max-width: 760px; margin: 2em auto; padding: 0 1em; color: #222; }
-  h1 { font-size: 1.3em; }
-  select, button { font-size: 1em; padding: 0.4em 0.7em; margin-right: 0.5em; }
-  #card { background: #f6f6f6; border-radius: 8px; padding: 1em; margin: 1em 0; }
-  #card h3 { margin-top: 0; }
-  #transcript { border: 1px solid #ddd; border-radius: 8px; padding: 1em; min-height: 200px; white-space: pre-wrap; }
-  .agent { color: #0a5; font-weight: 600; }
-  .user { color: #06c; font-weight: 600; }
-  #status { font-size: 0.9em; color: #777; margin: 0.5em 0; }
-  .must-not { color: #a00; }
+  :root {
+    --bg: #11141c;
+    --surface: #181c27;
+    --surface-raised: #1f2433;
+    --fg: #f3efe6;
+    --fg-muted: #9aa0b4;
+    --gold: #d8a84e;
+    --gold-soft: #3a3322;
+    --line: rgba(243, 239, 230, 0.12);
+    --font-display: "Fraunces", Georgia, serif;
+    --font-body: "Work Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg); color: var(--fg); font-family: var(--font-body);
+    margin: 0; padding: 2rem 1.25rem 4rem; line-height: 1.5;
+  }
+  .page { max-width: 960px; margin: 0 auto; }
+
+  header { margin-bottom: 1.75rem; }
+  .eyebrow {
+    font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--gold);
+  }
+  h1 {
+    font-family: var(--font-display); font-weight: 500; font-size: clamp(1.8rem, 5vw, 2.4rem);
+    margin: 0.3rem 0 0.4rem;
+  }
+  .subtitle { color: var(--fg-muted); font-size: 0.95rem; max-width: 60ch; margin: 0; }
+
+  .layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1.5rem; align-items: start; }
+  @media (max-width: 760px) { .layout { grid-template-columns: 1fr; } }
+
+  .panel {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 14px;
+    padding: 1.25rem; min-width: 0;
+  }
+  .panel h2 {
+    font-family: var(--font-display); font-weight: 500; font-size: 1.05rem; margin: 0 0 0.2rem;
+  }
+  .panel-note { color: var(--fg-muted); font-size: 0.82rem; margin: 0 0 1rem; }
+
+  label.field-label {
+    display: block; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.04em;
+    text-transform: uppercase; color: var(--fg-muted); margin-bottom: 0.35rem;
+  }
+  select#scenarioSelect {
+    width: 100%; font-family: var(--font-body); font-size: 0.95rem; color: var(--fg);
+    background: var(--surface-raised); border: 1px solid var(--line); border-radius: 8px;
+    padding: 0.6rem 0.7rem; margin-bottom: 1rem;
+  }
+
+  .btn-row { display: flex; gap: 0.6rem; margin-bottom: 1rem; flex-wrap: wrap; }
+  button {
+    font-family: var(--font-body); font-weight: 600; font-size: 0.92rem;
+    border-radius: 999px; padding: 0.6rem 1.2rem; border: 1px solid transparent;
+    cursor: pointer; transition: opacity 0.15s ease;
+  }
+  button:disabled { opacity: 0.4; cursor: default; }
+  #startBtn { background: var(--gold); color: #1c1308; }
+  #startBtn:hover:not(:disabled) { opacity: 0.88; }
+  #endBtn { background: transparent; color: var(--fg); border-color: var(--line); }
+  #endBtn:hover:not(:disabled) { background: var(--surface-raised); }
+
+  #status {
+    display: inline-flex; align-items: center; font-family: var(--font-mono); font-size: 11.5px;
+    color: var(--fg-muted);
+  }
+
+  #card h3 {
+    font-family: var(--font-display); font-weight: 500; font-size: 1.05rem; margin: 0 0 0.5rem;
+  }
+  #card .outcome {
+    display: inline-block; font-family: var(--font-mono); font-size: 10.5px;
+    background: var(--gold-soft); color: var(--gold); padding: 3px 9px; border-radius: 999px;
+    margin-bottom: 0.75rem;
+  }
+  #card p.hint { color: var(--fg-muted); font-size: 0.82rem; margin: 0 0 0.4rem; }
+  #card ol, #card ul { margin: 0 0 0.9rem; padding-left: 1.2rem; font-size: 0.9rem; }
+  #card li { margin-bottom: 0.3rem; }
+  .must-not { color: #e08a7d; }
+
+  .text-row { margin-top: 0.25rem; }
+  #textInput {
+    width: 100%; font-family: var(--font-body); font-size: 0.9rem; color: var(--fg);
+    background: var(--surface-raised); border: 1px solid var(--line); border-radius: 8px;
+    padding: 0.6rem 0.75rem;
+  }
+  #textInput:disabled { opacity: 0.5; }
+  #textInput::placeholder { color: var(--fg-muted); }
+
+  #transcript {
+    min-height: 320px; max-height: 520px; overflow-y: auto;
+    display: flex; flex-direction: column; gap: 0.6rem;
+  }
+  #transcript:empty::before {
+    content: "The conversation appears here once you start.";
+    color: var(--fg-muted); font-size: 0.88rem;
+  }
+  .bubble-row { display: flex; }
+  .bubble-row.user { justify-content: flex-end; }
+  .bubble {
+    max-width: 82%; padding: 0.55rem 0.85rem; border-radius: 14px; font-size: 0.92rem;
+    line-height: 1.45;
+  }
+  .bubble-row.agent .bubble { background: var(--surface-raised); border: 1px solid var(--line); border-bottom-left-radius: 4px; }
+  .bubble-row.user .bubble { background: var(--gold-soft); color: var(--fg); border-bottom-right-radius: 4px; }
+  .speaker-label {
+    font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.04em; text-transform: uppercase;
+    color: var(--fg-muted); display: block; margin-bottom: 2px;
+  }
 </style>
 </head>
 <body>
+<div class="page">
 
-<h1>Talk to Asha — pick a test case, no retyping</h1>
+  <header>
+    <div class="eyebrow">Suvarna Gold Finance — fictional demo lender</div>
+    <h1>Talk to Asha</h1>
+    <p class="subtitle">
+      Pick a scenario below for the dynamic variables and a suggested role-play — but
+      Asha isn't matching a script. Say or type anything and she'll respond to what you
+      actually said, in context.
+    </p>
+  </header>
 
-<select id="scenarioSelect"></select>
-<button id="startBtn">Start conversation</button>
-<button id="endBtn" disabled>End</button>
-<span id="status"></span>
+  <div class="layout">
+    <div class="panel">
+      <h2>Scenario</h2>
+      <p class="panel-note">All 25 scenarios from the regression suite — no retyping needed.</p>
+      <label class="field-label" for="scenarioSelect">Choose one</label>
+      <select id="scenarioSelect"></select>
 
-<div id="card"></div>
+      <div class="btn-row">
+        <button id="startBtn">Start conversation</button>
+        <button id="endBtn" disabled>End</button>
+      </div>
+      <span id="status"></span>
 
-<div>
-  <input id="textInput" type="text" placeholder="Or type the customer's line here and press Enter" style="width: 70%; padding: 0.4em;" disabled />
+      <div id="card"></div>
+
+      <div class="text-row">
+        <label class="field-label" for="textInput">Type instead of talking</label>
+        <input id="textInput" type="text" placeholder="Say anything — not limited to the script" disabled />
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>Transcript</h2>
+      <p class="panel-note">Live as the conversation happens.</p>
+      <div id="transcript"></div>
+    </div>
+  </div>
+
 </div>
-
-<h3>Transcript</h3>
-<div id="transcript"></div>
 
 <script type="module">
 import { Conversation } from "https://esm.sh/@elevenlabs/client@latest";
@@ -770,14 +901,14 @@ for (const s of SCENARIOS) {
 }
 
 function renderCard(scenario) {
-  const scriptHtml = scenario.script.map((l, i) => `<li>${l}</li>`).join("");
+  const scriptHtml = scenario.script.map((l) => `<li>${l}</li>`).join("");
   const mustNotHtml = scenario.must_not.map((l) => `<li class="must-not">${l}</li>`).join("");
   card.innerHTML = `
     <h3>${scenario.name}</h3>
-    <p><b>Expected outcome:</b> ${scenario.expected_outcome}</p>
-    <p><b>Say roughly this, in your own words:</b></p>
+    <span class="outcome">${scenario.expected_outcome}</span>
+    <p class="hint">A starting point, not a script — say it your own way, or take the call wherever feels natural.</p>
     <ol>${scriptHtml}</ol>
-    <p><b>Agent must NOT:</b></p>
+    <p class="hint">Agent must not:</p>
     <ul>${mustNotHtml || "<li>(nothing specific)</li>"}</ul>
   `;
 }
@@ -790,9 +921,20 @@ renderCard(currentScenario());
 select.addEventListener("change", () => renderCard(currentScenario()));
 
 function logLine(speaker, text) {
-  const div = document.createElement("div");
-  div.innerHTML = `<span class="${speaker}">${speaker === "agent" ? "Asha" : "You"}:</span> ${text}`;
-  transcript.appendChild(div);
+  const row = document.createElement("div");
+  row.className = `bubble-row ${speaker}`;
+
+  const label = document.createElement("span");
+  label.className = "speaker-label";
+  label.textContent = speaker === "agent" ? "Asha" : "You";
+
+  const bubble = document.createElement("div");
+  bubble.className = "bubble";
+  bubble.appendChild(label);
+  bubble.appendChild(document.createTextNode(text));
+
+  row.appendChild(bubble);
+  transcript.appendChild(row);
   transcript.scrollTop = transcript.scrollHeight;
 }
 
