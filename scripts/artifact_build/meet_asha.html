@@ -1,0 +1,184 @@
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>Meet Asha</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  /* layout: single-column editorial page — hero, proof chips, scenario cards, CTA, honest caveats */
+  :root {
+    --bg: #11141c;
+    --surface: #181c27;
+    --surface-raised: #1f2433;
+    --fg: #f3efe6;
+    --fg-muted: #9aa0b4;
+    --gold: #d8a84e;
+    --gold-soft: #3a3322;
+    --line: rgba(243, 239, 230, 0.1);
+    --font-display: "Fraunces", Georgia, serif;
+    --font-body: "Work Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg: #faf7f0;
+      --surface: #ffffff;
+      --surface-raised: #ffffff;
+      --fg: #1c1a14;
+      --fg-muted: #6b6456;
+      --gold: #a9741f;
+      --gold-soft: #f1e4c6;
+      --line: rgba(28, 26, 20, 0.12);
+      color-scheme: light;
+    }
+  }
+  :root[data-theme="light"] {
+    --bg: #faf7f0;
+    --surface: #ffffff;
+    --surface-raised: #ffffff;
+    --fg: #1c1a14;
+    --fg-muted: #6b6456;
+    --gold: #a9741f;
+    --gold-soft: #f1e4c6;
+    --line: rgba(28, 26, 20, 0.12);
+    color-scheme: light;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-body);
+    line-height: 1.6;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding-block: 3rem 4rem; }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(2.4rem, 7vw, 3.6rem);
+    line-height: 1.05;
+    margin: 0.5rem 0 1rem;
+    text-wrap: balance;
+  }
+  .lede { font-size: 1.05rem; color: var(--fg-muted); max-width: 56ch; margin: 0 0 1.5rem; }
+  .meta {
+    font-size: 0.85rem; color: var(--fg-muted); border-top: 1px solid var(--line);
+    padding-top: 1rem; margin-top: 1.5rem;
+  }
+  .meta b { color: var(--fg); font-weight: 500; }
+
+  .proof {
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px;
+    margin: 2.5rem 0;
+  }
+  .proof-item {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+    padding: 1rem 1.1rem; min-width: 0;
+  }
+  .proof-item .n { font-family: var(--font-mono); font-size: 11px; color: var(--gold); letter-spacing: 0.04em; }
+  .proof-item p { margin: 0.35rem 0 0; font-size: 0.92rem; }
+
+  h2 {
+    font-family: var(--font-display); font-weight: 500; font-size: 1.4rem;
+    margin: 0 0 0.3rem;
+  }
+  .section-lede { color: var(--fg-muted); font-size: 0.95rem; margin: 0 0 1.25rem; max-width: 56ch; }
+
+  .scenarios { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-bottom: 2.5rem; }
+  .scenario-card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 12px;
+    padding: 1rem 1.1rem; min-width: 0; display: flex; flex-direction: column; gap: 0.5rem;
+  }
+  .scenario-card p { margin: 0; font-size: 0.9rem; color: var(--fg-muted); }
+  .scenario-card .name { font-weight: 500; font-size: 0.95rem; color: var(--fg); }
+  .badge {
+    align-self: flex-start; font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.03em;
+    background: var(--gold-soft); color: var(--gold); padding: 3px 8px; border-radius: 999px;
+  }
+
+  .cta-block {
+    background: var(--surface-raised); border: 1px solid var(--line); border-radius: 16px;
+    padding: 1.75rem; text-align: center; margin: 2.5rem 0;
+  }
+  .cta-block p { color: var(--fg-muted); font-size: 0.92rem; margin: 0.5rem 0 1.25rem; }
+  .cta-btn {
+    display: inline-block; font-family: var(--font-body); font-weight: 600; font-size: 1rem;
+    color: #1c1308; background: var(--gold); padding: 0.85rem 1.8rem; border-radius: 999px;
+    text-decoration: none; transition: opacity 0.15s ease;
+  }
+  .cta-btn:hover { opacity: 0.88; }
+  .cta-note { font-family: var(--font-mono); font-size: 11px; color: var(--fg-muted); margin-top: 0.9rem !important; }
+
+  .caveats { border-top: 1px solid var(--line); padding-top: 1.5rem; margin-top: 2.5rem; }
+  .caveats ul { margin: 0; padding-left: 1.1rem; }
+  .caveats li { font-size: 0.88rem; color: var(--fg-muted); margin-bottom: 0.5rem; }
+  .caveats li b { color: var(--fg); font-weight: 500; }
+
+  @media (max-width: 520px) {
+    .proof, .scenarios { grid-template-columns: 1fr; }
+  }
+</style>
+
+<div class="wrap">
+
+  <div class="eyebrow">Suvarna Gold Finance — a fictional demo lender</div>
+  <h1>Meet Asha</h1>
+  <p class="lede">
+    Asha is a voice AI agent who calls customers who started a gold loan application and
+    stopped partway through. She isn't selling — she's finding out why they stopped, and
+    helping them finish if she can.
+  </p>
+  <div class="meta">
+    Built by <b>Rohith KC</b> for the Founding PM interview at <b>Karta AI</b>. Every lender
+    fact, rate and figure here is a labelled placeholder — nothing is a real product.
+  </div>
+
+  <div class="proof">
+    <div class="proof-item"><div class="n">Identity first</div><p>States who's calling and that she's an AI before any loan detail, every time.</p></div>
+    <div class="proof-item"><div class="n">No invented numbers</div><p>Every rupee amount comes from a calculator; she never does arithmetic herself.</p></div>
+    <div class="proof-item"><div class="n">Tested at scale</div><p>Checked against 25 scripted scenarios, including OTP traps and prompt injection.</p></div>
+    <div class="proof-item"><div class="n">Knows when to stop</div><p>Two tries on an objection, then a graceful exit — never a third push.</p></div>
+  </div>
+
+  <h2>Eight calls worth trying</h2>
+  <p class="section-lede">
+    A sample from the test suite — each one checks something specific, from a routine
+    booking to a deliberate attempt to trip her up.
+  </p>
+  <div class="scenarios">
+    <div class="scenario-card"><span class="badge">appraisal_booked</span><div class="name">Branch is far</div><p>A cooperative customer who's put off by the distance — she offers a slot and books it.</p></div>
+    <div class="scenario-card"><span class="badge">wrong_person</span><div class="name">Spouse answers</div><p>Not the applicant on the line — she shares nothing and ends the call politely.</p></div>
+    <div class="scenario-card"><span class="badge">callback_scheduled</span><div class="name">Busy, driving</div><p>Asks to be called later — she doesn't push, just books the callback.</p></div>
+    <div class="scenario-card"><span class="badge">whatsapp_sent</span><div class="name">Suspicious applicant</div><p>Questions whether it's a scam — she explains plainly, no defensiveness.</p></div>
+    <div class="scenario-card"><span class="badge">appraisal_booked</span><div class="name">The adversarial one</div><p>Offers an OTP, asks if she's a bot, tries a prompt injection — she refuses, discloses, and stays on task.</p></div>
+    <div class="scenario-card"><span class="badge">opt_out</span><div class="name">Hostile, wants out</div><p>Abusive and demands removal — she records it and ends at once, no "one last thing".</p></div>
+    <div class="scenario-card"><span class="badge">appraisal_booked</span><div class="name">Switches to Hindi</div><p>Mid-call language switch — she follows, and keeps every number honest either way.</p></div>
+    <div class="scenario-card"><span class="badge">callback_scheduled</span><div class="name">Asks about a top-up</div><p>Already has a loan with us — she hands off instead of guessing at a number.</p></div>
+  </div>
+
+  <div class="cta-block">
+    <h2>Talk to her yourself</h2>
+    <p>Pick any of these scenarios — or just be yourself — and have a real voice or text conversation with the live agent.</p>
+    <a class="cta-btn" href="https://suvarna-tools-server.onrender.com/demo" target="_blank" rel="noopener">Open the live demo</a>
+    <p class="cta-note">Opens in a new tab · needs microphone access for voice, or type instead</p>
+  </div>
+
+  <div class="caveats">
+    <h2>What this doesn't answer yet</h2>
+    <ul>
+      <li><b>Show-up rate.</b> Whether a booked appraisal becomes a branch visit needs real lender data this demo doesn't have.</li>
+      <li><b>Consent and number series.</b> India's telecom rules for which calls need which number series aren't confirmed — treated as promotional until counsel says otherwise.</li>
+      <li><b>Live integration.</b> This runs against synthetic leads and a mock CRM, not a real loan origination system.</li>
+    </ul>
+  </div>
+
+</div>
