@@ -65,6 +65,7 @@ def dynamic_variables(lead):
     """Exactly the variables the prompts use. Visible fields + fixed defaults only."""
     visible = lead.visible
     return {
+        "lead_id": visible["lead_id"],
         "customer_name": visible["customer_name"],
         "agent_name": AGENT_NAME,
         "lender_name": LENDER_NAME,

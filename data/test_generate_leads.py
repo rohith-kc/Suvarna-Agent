@@ -9,7 +9,7 @@ import re
 
 import pytest
 
-from data.generate_leads import compute_expected_outcome, generate_leads
+from data.generate_leads import build_lead_from_scenario, compute_expected_outcome, generate_leads
 
 PHONE_RE = re.compile(r"^\+910\d{9}$")
 
@@ -126,6 +126,30 @@ def test_uc2_default_appraisal_booked():
     assert compute_expected_outcome("gold_applicant", "cooperative", truth) == "appraisal_booked"
 
 
+def test_uc2_amount_far_above_eligible_whatsapp_sent():
+    # KC's decision on docs/OPEN_QUESTIONS.md #13: UC2 gets a UC1-style
+    # amount-mismatch rule, but lands on whatsapp_sent, not not_a_fit —
+    # this customer already owns gold and already started an application.
+    truth = {
+        "true_blocker": "unsure_amount",
+        "owns_gold": True,
+        "amount_needed": 400000,
+        "eligible_amount": 200000,
+    }
+    assert compute_expected_outcome("gold_applicant", "cooperative", truth) == "whatsapp_sent"
+
+
+def test_uc2_amount_mismatch_rule_skipped_when_no_eligible_amount():
+    # eligible_amount 0 (no gold) must not trigger the mismatch rule.
+    truth = {
+        "true_blocker": "unsure_amount",
+        "owns_gold": False,
+        "amount_needed": 400000,
+        "eligible_amount": 0,
+    }
+    assert compute_expected_outcome("gold_applicant", "cooperative", truth) == "appraisal_booked"
+
+
 def test_uc1_no_gold_not_a_fit():
     truth = {"owns_gold": False, "amount_needed": 100000, "eligible_amount": 0}
     assert compute_expected_outcome("loan_seeker", "cooperative", truth) == "not_a_fit"
@@ -145,3 +169,41 @@ def test_uc1_soft_personas_whatsapp_sent(persona):
 def test_uc1_default_appraisal_booked():
     truth = {"owns_gold": True, "amount_needed": 100000, "eligible_amount": 200000}
     assert compute_expected_outcome("loan_seeker", "cooperative", truth) == "appraisal_booked"
+
+
+def test_scenario_persona_override_keeps_right_person_consistent():
+    # A scenario overriding persona to wrong_person must also flip
+    # right_person, or judge.derive_outcome's truth-based fallback for
+    # wrong_person/no_answer would use stale data from the random base lead.
+    scenario = {
+        "id": "test_wrong_person",
+        "use_case": "gold_applicant",
+        "truth_overrides": {"persona": "wrong_person", "owns_gold": True},
+        "expected_outcome": "wrong_person",
+    }
+    record = build_lead_from_scenario(scenario, seed=1)
+    assert record["truth"]["right_person"] is False
+    assert record["truth"]["answers_phone"] is True
+
+
+def test_scenario_persona_override_silent_no_answer_sets_answers_phone_false():
+    scenario = {
+        "id": "test_silent",
+        "use_case": "gold_applicant",
+        "truth_overrides": {"persona": "silent_no_answer", "owns_gold": True},
+        "expected_outcome": "no_answer",
+    }
+    record = build_lead_from_scenario(scenario, seed=1)
+    assert record["truth"]["answers_phone"] is False
+    assert record["truth"]["right_person"] is True
+
+
+def test_scenario_explicit_right_person_override_is_not_clobbered():
+    scenario = {
+        "id": "test_explicit",
+        "use_case": "gold_applicant",
+        "truth_overrides": {"persona": "wrong_person", "right_person": True, "owns_gold": True},
+        "expected_outcome": "wrong_person",
+    }
+    record = build_lead_from_scenario(scenario, seed=1)
+    assert record["truth"]["right_person"] is True

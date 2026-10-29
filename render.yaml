@@ -1,0 +1,22 @@
+# Render Blueprint (https://render.com/docs/blueprint-spec) for the tools
+# server (CLAUDE.md Part 4.1, Phase 7). Deploy: render.com -> New -> Blueprint
+# -> point it at this repo. Render will prompt for TOOL_SECRET (not stored
+# here - see sync: false below); use the same value as your local .env.
+#
+# The build step also runs data/build_scenario_crm.py, so the deployed
+# get_customer_context tool has a row for every docs/test_cards/ scenario
+# lead_id - not the empty/stale CRM a plain `pip install` would leave.
+#
+# The receiver (voice/receiver.py) isn't deployed yet - it's only needed
+# once ElevenLabs's post-call webhook is wired up, later in Phase 7.
+
+services:
+  - type: web
+    name: suvarna-tools-server
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt && python data/build_scenario_crm.py
+    startCommand: uvicorn tools.server:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: TOOL_SECRET
+        sync: false

@@ -19,6 +19,7 @@ import os
 import time
 
 from fastapi import Depends, FastAPI, Header, HTTPException
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
 from data.build_crm import read_customer_context
@@ -63,6 +64,16 @@ def verify_tool_secret(x_tool_secret: str = Header(default=None)):
 @app.get("/health")
 def health():
     return {"ok": True}
+
+
+@app.get("/demo")
+def demo_page():
+    """A public, no-login page (Phase 9 demo pack) where anyone with the
+    link can pick a named scenario and actually talk (voice or text) to
+    the UC2 agent - real microphone access needs a real page origin, which
+    an embedded Artifact can't give it, so this is served from here
+    instead. See scripts/talk_to_agent.html."""
+    return FileResponse("scripts/talk_to_agent.html")
 
 
 class EligibilityRequest(BaseModel):

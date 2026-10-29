@@ -1,5 +1,5 @@
 {
-  "_comment": "ElevenLabs webhook-tool definitions (CLAUDE.md Part 5.2). Each entry under \"tools\" is a full request body for POST /v1/convai/tools (per ElevenLabs' tool-create API, checked Oct 2026). Descriptions are written to steer WHEN the model calls each tool, per CLAUDE.md Part 5.2. PLACEHOLDERS KC must fill in before using these: (1) every api_schema.url ('https://REPLACE_WITH_TOOLS_SERVER_URL' -> the deployed tools server from Phase 7), (2) the X-Tool-Secret header's secret_id -> an ElevenLabs workspace Secret holding the TOOL_SECRET value from .env.",
+  "_comment": "ElevenLabs webhook-tool definitions (CLAUDE.md Part 5.2). Each entry under \"tools\" is a full request body for POST /v1/convai/tools (per ElevenLabs' tool-create API, checked Oct 2026). Descriptions are written to steer WHEN the model calls each tool, per CLAUDE.md Part 5.2. api_schema.url already points at the deployed tools server (Phase 7, Render). One placeholder remains: the X-Tool-Secret header's secret_id -> an ElevenLabs workspace Secret holding the TOOL_SECRET value from .env (set it when adding each tool in the dashboard; it isn't filled in here since it's generated per-workspace by ElevenLabs, not something this file can know in advance).",
   "tools": [
     {
       "tool_config": {
@@ -7,7 +7,7 @@
         "name": "calculate_eligibility",
         "description": "Call this once the customer has told you roughly how many grams of gold they have (or tola, if they used that unit), and the karat if known. Never calculate or guess a loan amount yourself — always call this tool and speak only the range it returns, exactly as say_to_customer phrases it.",
         "api_schema": {
-          "url": "https://REPLACE_WITH_TOOLS_SERVER_URL/calculate_eligibility",
+          "url": "https://suvarna-tools-server.onrender.com/calculate_eligibility",
           "method": "POST",
           "request_headers": {
             "X-Tool-Secret": { "secret_id": "REPLACE_WITH_TOOL_SECRET_ID" },
@@ -60,7 +60,7 @@
         "name": "book_appraisal",
         "description": "Call this once the customer has agreed to a specific appraisal slot and mode (branch or doorstep). Confirms the booking and returns a confirmation id — read it back to the customer. If doorstep isn't offered, the tool will say so; don't promise it beforehand.",
         "api_schema": {
-          "url": "https://REPLACE_WITH_TOOLS_SERVER_URL/book_appraisal",
+          "url": "https://suvarna-tools-server.onrender.com/book_appraisal",
           "method": "POST",
           "request_headers": {
             "X-Tool-Secret": { "secret_id": "REPLACE_WITH_TOOL_SECRET_ID" },
@@ -96,7 +96,7 @@
         "name": "send_whatsapp_summary",
         "description": "Call this after the customer has clearly agreed (a yes/no answer, not a vague 'hmm') to receive a WhatsApp message — for example the eligibility range, or a documents checklist. Always confirm consent with a direct question before calling this.",
         "api_schema": {
-          "url": "https://REPLACE_WITH_TOOLS_SERVER_URL/send_whatsapp_summary",
+          "url": "https://suvarna-tools-server.onrender.com/send_whatsapp_summary",
           "method": "POST",
           "request_headers": {
             "X-Tool-Secret": { "secret_id": "REPLACE_WITH_TOOL_SECRET_ID" },
@@ -127,7 +127,7 @@
         "name": "schedule_callback",
         "description": "Call this when the customer asks for a human, sounds distressed or confused, raises something outside this call's scope (another loan, a complaint, a dispute), asks about a rate or fee not in the lender facts, or asks to be called back at a specific time. Never promise a callback without calling this tool.",
         "api_schema": {
-          "url": "https://REPLACE_WITH_TOOLS_SERVER_URL/schedule_callback",
+          "url": "https://suvarna-tools-server.onrender.com/schedule_callback",
           "method": "POST",
           "request_headers": {
             "X-Tool-Secret": { "secret_id": "REPLACE_WITH_TOOL_SECRET_ID" },
@@ -162,7 +162,7 @@
         "name": "record_opt_out",
         "description": "Call this immediately when the customer asks to stop being called, says not to call again, or otherwise opts out — in any words. Say one short, polite closing line and end the call right after calling this tool. Do not continue asking questions once this is called.",
         "api_schema": {
-          "url": "https://REPLACE_WITH_TOOLS_SERVER_URL/record_opt_out",
+          "url": "https://suvarna-tools-server.onrender.com/record_opt_out",
           "method": "POST",
           "request_headers": {
             "X-Tool-Secret": { "secret_id": "REPLACE_WITH_TOOL_SECRET_ID" },
@@ -193,7 +193,7 @@
         "name": "get_customer_context",
         "description": "Call this once, at the very start of the call, right after confirming identity and before asking anything else, to look up what this customer has already done. Use the notes and history only to avoid repeating questions the customer has already answered elsewhere — never read the history aloud verbatim.",
         "api_schema": {
-          "url": "https://REPLACE_WITH_TOOLS_SERVER_URL/get_customer_context",
+          "url": "https://suvarna-tools-server.onrender.com/get_customer_context",
           "method": "POST",
           "request_headers": {
             "X-Tool-Secret": { "secret_id": "REPLACE_WITH_TOOL_SECRET_ID" },

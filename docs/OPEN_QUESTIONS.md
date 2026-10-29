@@ -41,3 +41,55 @@ something the brief got wrong or doesn't know — don't guess, ask KC.
    `simulation/agent_runner.py` should import and reuse this rather than
    re-implementing the same logic. **(ask Karta — confirm this is fine; no
    action needed otherwise)**
+
+11. Phase 4's cost guard (`run_simulation.py`, Part 5.5: "print an estimate
+   before any run over 20 calls... using token counts") is only a
+   call-count gate (>20 calls needs `--yes`), not a real token-based $
+   estimate. A true estimate needs the provider's current per-token price,
+   which Part 0 rule 5 says to verify in the provider's own docs rather
+   than hardcode from memory. KC picked the free Gemini tier (HUMAN GATE
+   4), so cost is $0 for now, but this should be revisited with a real
+   estimate before switching to any paid provider. `MAX_SIM_COST_USD` is
+   read into `simulation/config.py` but not yet enforced. **(ask Karta —
+   fine to leave as-is while on the free tier; revisit before paid use)**
+
+13. **RESOLVED (2026-10-28).** CLAUDE.md Part 5.3's `expected_outcome`
+   rules gave UC1 a `not_a_fit` exception when `amount_needed` is far
+   above `eligible_amount`, but UC2 had no equivalent. Seen live in
+   HUMAN GATE 4's real test call (lead `gold_applicant-0014`: needed
+   400,000, eligible for ~225,000): the agent sensibly pivoted to a
+   WhatsApp summary instead of forcing a booking, but the harness scored
+   it `fail` since `expected_outcome` said `appraisal_booked` regardless.
+   KC's decision: add the exception to UC2 too, but land on
+   `whatsapp_sent` rather than `not_a_fit` — unlike UC1, this customer
+   already owns gold and already started an application, so the honest
+   outcome is still to keep them as a lead via WhatsApp, not end the
+   relationship. Implemented in `compute_expected_outcome()`
+   (`data/generate_leads.py`): when `eligible_amount > 0` and
+   `amount_needed > 1.15 * eligible_amount`, UC2 now expects
+   `whatsapp_sent`.
+
+14. The free Gemini tier's actual daily quota for `gemini-flash-lite-latest`
+   is lower than our own `MAX_REQUESTS_PER_DAY` safety cap (set to 5000 for
+   this run) and ran out partway through the very first Phase 5 baseline
+   run (60 calls): 22 of 60 calls hit a sustained 429 that outlasted
+   `simulation/llm.py`'s retries (6 attempts, up to 30s backoff), and a
+   follow-up 10-call run later the same day failed 10/10 immediately.
+   AI Studio's quota page (https://aistudio.google.com/rate-limit) is the
+   only place the real number is shown per Part 0 rule 5, and I can't open
+   KC's account. Rough budget observed: about 40-50 real calls/day before
+   it runs out. **(ask Karta — check the real number in AI Studio; decide
+   whether to wait for the daily reset, add a GROQ_API_KEY as a second
+   free-tier provider, or move to a paid key, before continuing Phase 5's
+   baseline runs)**
+
+12. Gemini's free-tier model names moved on from `gemini-2.5-flash`
+   (404s: "no longer available to new users, use gemini-3.8-flash") to a
+   `-latest`/`-lite-latest` alias scheme. `gemini-flash-latest` also hit a
+   503 ("high demand") during HUMAN GATE 4's real test call; the working
+   model as of 2026-10-28 was `gemini-flash-lite-latest`. `simulation/llm.py`
+   now retries on 429/500/502/503/504 and timeouts, but if these aliases
+   shift again, re-check aistudio.google.com's own quickstart snippet
+   (the most reliable source — it showed the exact working model name and
+   current key format when docs search gave conflicting answers).
+   **(informational — no action needed unless models 404/503 again)**
