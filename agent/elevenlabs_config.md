@@ -284,22 +284,32 @@ Only needed once `voice/receiver.py` is deployed (Phase 7's HUMAN GATE
 checklist). Points at `<receiver-url>/elevenlabs/post-call`, signed with
 `ELEVENLABS_WEBHOOK_SECRET`. Skip this for just talking to the agent.
 
-## Part 6: exposing the tools server
+## Part 6: deploying the tools server (Render)
 
 `get_customer_context` is called on every single call, right at the
 start — so none of the test cards work cleanly until the tools server
 (`tools/server.py`) is reachable from ElevenLabs's side, not just
-`localhost`. Options, in order of speed:
+`localhost`. KC chose a real deploy over a quick tunnel, on Render
+(free tier), using the `render.yaml` at the repo root.
 
-1. **A quick public tunnel** (fastest, good enough for today's testing;
-   the URL changes each time it's restarted) — e.g. a Cloudflare Quick
-   Tunnel (`cloudflared tunnel --url http://localhost:8000`, no account
-   needed) or ngrok. Needs the tunnel tool installed once.
-2. **A real deploy** (durable, needed eventually for Phase 7 anyway) —
-   Render, Railway, or Fly.io all have a free tier that can run
-   `uvicorn tools.server:app`. Needs a `render.yaml` (or equivalent) and
-   an account on whichever host.
+**HUMAN GATE — KC does this by hand:**
+1. Push this branch (already done — `phase-4-simulation`).
+2. In the Render dashboard: New → Blueprint → connect this GitHub repo
+   → Render reads `render.yaml` and proposes one service,
+   `suvarna-tools-server`.
+3. When prompted for `TOOL_SECRET`, paste the same value as local
+   `.env`'s `TOOL_SECRET` (if that's still blank locally, pick any
+   random string now and put it in both places).
+4. Deploy. The build step installs dependencies and runs
+   `data/build_scenario_crm.py`, so the deployed CRM has a row for every
+   `docs/test_cards/` scenario lead_id already.
+5. Once live, confirm `GET https://<your-service>.onrender.com/health`
+   returns `{"ok": true}`.
+6. Replace every `https://REPLACE_WITH_TOOLS_SERVER_URL` in
+   `tools/tool_definitions.json` with that base URL before adding the
+   six webhook tools to the ElevenLabs agent (Part 7 above).
 
-Either way: set `TOOL_SECRET` in the server's environment (same value as
-local `.env`), and confirm `GET /health` returns `{"ok": true}` from the
-public URL before wiring it into ElevenLabs.
+Render's free web services spin down when idle and take a few seconds
+to wake on the next request — the agent's tool-call fallback ("I'm
+having trouble checking that right now") is the right behaviour if a
+call lands during that cold start, not a bug.
