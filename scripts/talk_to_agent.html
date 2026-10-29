@@ -809,8 +809,7 @@ startBtn.addEventListener("click", async () => {
       dynamicVariables: scenario.variables,
       onConnect: () => { statusEl.textContent = "Connected — speak when ready."; },
       onDisconnect: () => { statusEl.textContent = "Disconnected."; endBtn.disabled = true; startBtn.disabled = false; select.disabled = false; },
-      onMessage: (msg) => logLine("agent", msg.message ?? JSON.stringify(msg)),
-      onUserTranscript: (t) => logLine("user", t.message ?? JSON.stringify(t)),
+      onMessage: (msg) => logLine(msg.role === "user" ? "user" : "agent", msg.message ?? JSON.stringify(msg)),
       onError: (e) => { statusEl.textContent = "Error: " + e; console.error(e); },
     });
     endBtn.disabled = false;
