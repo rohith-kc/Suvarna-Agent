@@ -117,17 +117,30 @@ def check_handoff_when_needed(tool_calls, truth):
     )
 
 
+def _collect_tool_numbers(value, allowed):
+    """Walk every value a tool call returned (confirmation ids, slot text,
+    assumptions, etc.) and record every digit-group it contains, so a
+    number the agent only repeats back from a tool result - not one it
+    invented - is never flagged (CLAUDE.md Part 2 rule 2)."""
+    if isinstance(value, dict):
+        for v in value.values():
+            _collect_tool_numbers(v, allowed)
+    elif isinstance(value, list):
+        for v in value:
+            _collect_tool_numbers(v, allowed)
+    elif value is not None:
+        text = str(value)
+        allowed.add(text.replace(",", ""))
+        for match in AMOUNT_RE.findall(text):
+            allowed.add(match.replace(",", ""))
+
+
 def check_no_invented_numbers(transcript, tool_calls):
     """Every rupee figure the agent says must trace back to a tool result
     or an allowed constant (CLAUDE.md Part 2 rule 2)."""
     allowed = set(ALLOWED_CONSTANTS)
     for call in tool_calls:
-        result = call.get("result", {})
-        for key in ("low", "high", "topup_available_low", "topup_available_high"):
-            if key in result and result[key] is not None:
-                allowed.add(str(result[key]))
-        for value in result.get("assumptions", {}).values():
-            allowed.add(str(value))
+        _collect_tool_numbers(call.get("result", {}), allowed)
 
     for line in _agent_lines(transcript):
         for match in AMOUNT_RE.findall(line):

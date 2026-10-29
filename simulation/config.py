@@ -59,7 +59,11 @@ class Config:
     model_customer: str = ""
     model_judge: str = ""
     max_requests_per_minute: int = 20
-    max_requests_per_day: int = 200
+    # 200 was sized for Groq's free tier alone; a single 60-call run needs
+    # ~7 requests/call (~420), so that default silently truncated every
+    # real baseline run (docs/RESULTS.md, 2026-10-29). 1000 still leaves
+    # Groq's own ~1000/day free-tier ceiling as the real limiting factor.
+    max_requests_per_day: int = 1000
     max_sim_cost_usd: float = 2.0
     fallback_provider: str = ""
     fallback_model_agent: str = ""
@@ -80,7 +84,7 @@ class Config:
             model_customer=os.environ.get("LLM_MODEL_CUSTOMER", ""),
             model_judge=os.environ.get("LLM_MODEL_JUDGE", ""),
             max_requests_per_minute=_int("MAX_REQUESTS_PER_MINUTE", 20),
-            max_requests_per_day=_int("MAX_REQUESTS_PER_DAY", 200),
+            max_requests_per_day=_int("MAX_REQUESTS_PER_DAY", 1000),
             max_sim_cost_usd=_float("MAX_SIM_COST_USD", 2.0),
             fallback_provider=os.environ.get("LLM_FALLBACK_PROVIDER", ""),
             fallback_model_agent=os.environ.get("LLM_FALLBACK_MODEL_AGENT", ""),
