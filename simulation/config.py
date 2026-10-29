@@ -61,6 +61,10 @@ class Config:
     max_requests_per_minute: int = 20
     max_requests_per_day: int = 200
     max_sim_cost_usd: float = 2.0
+    fallback_provider: str = ""
+    fallback_model_agent: str = ""
+    fallback_model_customer: str = ""
+    fallback_model_judge: str = ""
 
     @classmethod
     def from_env(cls):
@@ -78,4 +82,8 @@ class Config:
             max_requests_per_minute=_int("MAX_REQUESTS_PER_MINUTE", 20),
             max_requests_per_day=_int("MAX_REQUESTS_PER_DAY", 200),
             max_sim_cost_usd=_float("MAX_SIM_COST_USD", 2.0),
+            fallback_provider=os.environ.get("LLM_FALLBACK_PROVIDER", ""),
+            fallback_model_agent=os.environ.get("LLM_FALLBACK_MODEL_AGENT", ""),
+            fallback_model_customer=os.environ.get("LLM_FALLBACK_MODEL_CUSTOMER", ""),
+            fallback_model_judge=os.environ.get("LLM_FALLBACK_MODEL_JUDGE", ""),
         )

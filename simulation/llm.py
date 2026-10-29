@@ -5,6 +5,7 @@ LLM_MODEL_AGENT/CUSTOMER/JUDGE, never hard-coded; verify current names and
 prices in each provider's docs before a real run (Part 0 rule 5).
 """
 
+import dataclasses
 import subprocess
 import time
 
@@ -142,13 +143,38 @@ _rate_limiters = {}
 
 
 def _rate_limiter_for(config):
-    key = (config.max_requests_per_minute, config.max_requests_per_day)
+    # Keyed by provider too - a fallback provider has its own real-world
+    # quota and must not share a budget with the (now-exhausted) primary.
+    key = (config.provider, config.max_requests_per_minute, config.max_requests_per_day)
     if key not in _rate_limiters:
-        _rate_limiters[key] = RateLimiter(*key)
+        _rate_limiters[key] = RateLimiter(config.max_requests_per_minute, config.max_requests_per_day)
     return _rate_limiters[key]
 
 
+# Providers that have exhausted their retries once already this process -
+# later calls skip straight to the fallback instead of wasting a full
+# retry budget on a provider already known to be down (e.g. a daily quota
+# that won't clear no matter how long this run waits).
+_PROVIDER_DOWN = set()
+
 MAX_BACKOFF_SECONDS = 30
+
+
+def _fallback_config(config):
+    """None if no fallback is configured (LLM_FALLBACK_PROVIDER), or it's
+    the same as the primary. Otherwise a copy of config pointed at the
+    fallback provider and its own model names (LLM_FALLBACK_MODEL_*) -
+    each provider needs its own model name, never shared (CLAUDE.md Part
+    0 rule 5: Gemini and Groq model names look nothing alike)."""
+    if not config.fallback_provider or config.fallback_provider == config.provider:
+        return None
+    return dataclasses.replace(
+        config,
+        provider=config.fallback_provider,
+        model_agent=config.fallback_model_agent or config.model_agent,
+        model_customer=config.fallback_model_customer or config.model_customer,
+        model_judge=config.fallback_model_judge or config.model_judge,
+    )
 
 
 def complete(role, messages, json_schema=None, config=None, max_retries=6):
@@ -160,8 +186,18 @@ def complete(role, messages, json_schema=None, config=None, max_retries=6):
     figure is per-project, shown only in AI Studio, not published generally
     - docs/OPEN_QUESTIONS.md #12) reset on a rolling minute window, and a
     429 often needs tens of seconds, not a couple of seconds, to clear.
+
+    If LLM_FALLBACK_PROVIDER is set and the primary provider exhausts its
+    retries (or was already marked down earlier this run), this falls
+    back to it automatically rather than raising.
     """
     config = config or Config.from_env()
+
+    if config.provider in _PROVIDER_DOWN:
+        fallback = _fallback_config(config)
+        if fallback is not None:
+            config = fallback
+
     if config.provider not in _PROVIDERS:
         raise ValueError(
             f"unknown LLM_PROVIDER: {config.provider!r} (expected one of "
@@ -185,12 +221,17 @@ def complete(role, messages, json_schema=None, config=None, max_retries=6):
                 time.sleep(backoff)
                 backoff = min(backoff * 2, MAX_BACKOFF_SECONDS)
                 continue
-            raise
+            break
         except (requests.Timeout, requests.ConnectionError) as exc:
             last_exc = exc
             if attempt < max_retries - 1:
                 time.sleep(backoff)
                 backoff = min(backoff * 2, MAX_BACKOFF_SECONDS)
                 continue
-            raise
+            break
+
+    fallback = _fallback_config(config)
+    if fallback is not None:
+        _PROVIDER_DOWN.add(config.provider)
+        return complete(role, messages, json_schema=json_schema, config=fallback, max_retries=max_retries)
     raise last_exc
