@@ -83,6 +83,17 @@ something the brief got wrong or doesn't know — don't guess, ask KC.
    free-tier provider, or move to a paid key, before continuing Phase 5's
    baseline runs)**
 
+   **Update (2026-10-29):** added the `GROQ_API_KEY` fallback
+   (`LLM_FALLBACK_PROVIDER=groq` in `simulation/llm.py`/`config.py`) as
+   suggested above. It worked - calls that hit a dead Gemini now complete
+   on Groq instead of erroring - but by the end of today's testing (two
+   60-call runs plus smaller ones) both Gemini's and Groq's free-tier daily
+   quotas were genuinely exhausted (real 429s from both providers' own
+   servers, not our own `MAX_REQUESTS_PER_DAY` cap, which was a separate,
+   now-fixed bug - see `docs/RESULTS.md`, 2026-10-29). A clean 3-run
+   evidence set (CLAUDE.md Part 5.6) needs either tomorrow's quota reset
+   spread across more than one day, or a paid key. **(ask Karta)**
+
 12. Gemini's free-tier model names moved on from `gemini-2.5-flash`
    (404s: "no longer available to new users, use gemini-3.8-flash") to a
    `-latest`/`-lite-latest` alias scheme. `gemini-flash-latest` also hit a
