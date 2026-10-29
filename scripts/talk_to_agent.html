@@ -188,6 +188,44 @@ const SCENARIOS = [
       "preferred_language": "Hindi",
       "branch_name": "our Jaipur branch"
     },
+    "crm": {
+      "customer": {
+        "lead_id": "scenario-uc2_cooperative_unsure_amount_hindi_switch",
+        "name": "Rohit",
+        "city": "Jaipur",
+        "preferred_language": "Hindi",
+        "consent_status": "applicant",
+        "dnd_flag": false
+      },
+      "applications": [
+        {
+          "lead_id": "scenario-uc2_cooperative_unsure_amount_hindi_switch",
+          "product": "gold loan",
+          "last_step_completed": "kyc_started",
+          "amount_entered": "150000",
+          "started_at": "2026-01-01T10:51:00+00:00",
+          "stopped_at": "2026-01-01T11:20:00+00:00",
+          "device": "app"
+        }
+      ],
+      "call_history": [
+        {
+          "lead_id": "scenario-uc2_cooperative_unsure_amount_hindi_switch",
+          "attempt_no": 1,
+          "called_at": "2025-12-29T12:00:00+00:00",
+          "result": "asked_callback"
+        }
+      ]
+    },
+    "truth": {
+      "persona": "cooperative",
+      "true_blocker": "unsure_amount",
+      "owns_gold": true,
+      "grams": 22,
+      "has_stones": false,
+      "purity_karat": 22,
+      "amount_needed": 500000
+    },
     "script": [
       "Yes, speaking.",
       "Oh right, I remember. I stopped because I wasn't sure how much I'd get.",
@@ -219,6 +257,36 @@ const SCENARIOS = [
       "preferred_language": "Hindi",
       "branch_name": "our Coimbatore branch"
     },
+    "crm": {
+      "customer": {
+        "lead_id": "scenario-uc2_cooperative_unsure_documents",
+        "name": "Shalini",
+        "city": "Coimbatore",
+        "preferred_language": "Hindi",
+        "consent_status": "applicant",
+        "dnd_flag": false
+      },
+      "applications": [
+        {
+          "lead_id": "scenario-uc2_cooperative_unsure_documents",
+          "product": "gold loan",
+          "last_step_completed": "amount_entered",
+          "amount_entered": "150000",
+          "started_at": "2026-01-01T10:19:00+00:00",
+          "stopped_at": "2026-01-01T11:45:00+00:00",
+          "device": "app"
+        }
+      ]
+    },
+    "truth": {
+      "persona": "cooperative",
+      "true_blocker": "unsure_documents",
+      "owns_gold": true,
+      "grams": 30,
+      "has_stones": false,
+      "purity_karat": 24,
+      "amount_needed": 75000
+    },
     "script": [
       "Yes, this is me.",
       "I wasn't sure what papers I need to bring.",
@@ -247,6 +315,42 @@ const SCENARIOS = [
       "city": "Mysuru",
       "preferred_language": "Kannada",
       "branch_name": "our Mysuru branch"
+    },
+    "crm": {
+      "customer": {
+        "lead_id": "scenario-uc2_cooperative_branch_far",
+        "name": "Radha",
+        "city": "Mysuru",
+        "preferred_language": "Kannada",
+        "consent_status": "applicant",
+        "dnd_flag": false
+      },
+      "applications": [
+        {
+          "lead_id": "scenario-uc2_cooperative_branch_far",
+          "product": "gold loan",
+          "last_step_completed": "appraisal_slot_page",
+          "amount_entered": "100000",
+          "started_at": "2026-01-01T07:34:00+00:00",
+          "stopped_at": "2026-01-01T10:30:00+00:00",
+          "device": "app"
+        }
+      ],
+      "notes": [
+        {
+          "lead_id": "scenario-uc2_cooperative_branch_far",
+          "text": "started filling KYC but closed the app"
+        }
+      ]
+    },
+    "truth": {
+      "persona": "cooperative",
+      "true_blocker": "branch_far",
+      "owns_gold": true,
+      "grams": 18,
+      "has_stones": false,
+      "purity_karat": 22,
+      "amount_needed": 100000
     },
     "script": [
       "Speaking.",
@@ -277,6 +381,36 @@ const SCENARIOS = [
       "preferred_language": "English",
       "branch_name": "our Hyderabad branch"
     },
+    "crm": {
+      "customer": {
+        "lead_id": "scenario-uc2_cooperative_safety_worry",
+        "name": "Sunita",
+        "city": "Hyderabad",
+        "preferred_language": "English",
+        "consent_status": "applicant",
+        "dnd_flag": false
+      },
+      "applications": [
+        {
+          "lead_id": "scenario-uc2_cooperative_safety_worry",
+          "product": "gold loan",
+          "last_step_completed": "kyc_started",
+          "amount_entered": "200000",
+          "started_at": "2026-01-01T05:04:00+00:00",
+          "stopped_at": "2026-01-01T08:00:00+00:00",
+          "device": "app"
+        }
+      ]
+    },
+    "truth": {
+      "persona": "cooperative",
+      "true_blocker": "safety_worry",
+      "owns_gold": true,
+      "grams": 15,
+      "has_stones": true,
+      "purity_karat": 20,
+      "amount_needed": 500000
+    },
     "script": [
       "Yes.",
       "I'm a bit worried about handing over my jewellery, is it safe?",
@@ -305,6 +439,44 @@ const SCENARIOS = [
       "city": "Pune",
       "preferred_language": "Hindi",
       "branch_name": "our Pune branch"
+    },
+    "crm": {
+      "customer": {
+        "lead_id": "scenario-uc2_cooperative_rate_unclear",
+        "name": "Sanjay",
+        "city": "Pune",
+        "preferred_language": "Hindi",
+        "consent_status": "applicant",
+        "dnd_flag": false
+      },
+      "applications": [
+        {
+          "lead_id": "scenario-uc2_cooperative_rate_unclear",
+          "product": "gold loan",
+          "last_step_completed": "amount_entered",
+          "amount_entered": "50000",
+          "started_at": "2026-01-01T11:00:00+00:00",
+          "stopped_at": "2026-01-01T11:54:00+00:00",
+          "device": "app"
+        }
+      ],
+      "call_history": [
+        {
+          "lead_id": "scenario-uc2_cooperative_rate_unclear",
+          "attempt_no": 1,
+          "called_at": "2025-12-13T12:00:00+00:00",
+          "result": "busy"
+        }
+      ]
+    },
+    "truth": {
+      "persona": "cooperative",
+      "true_blocker": "rate_unclear",
+      "owns_gold": true,
+      "grams": 25,
+      "has_stones": false,
+      "purity_karat": 22,
+      "amount_needed": 150000
     },
     "script": [
       "Yes, speaking.",
@@ -335,6 +507,44 @@ const SCENARIOS = [
       "preferred_language": "Hindi",
       "branch_name": "our Chennai branch"
     },
+    "crm": {
+      "customer": {
+        "lead_id": "scenario-uc2_cooperative_got_money_elsewhere",
+        "name": "Kavita",
+        "city": "Chennai",
+        "preferred_language": "Hindi",
+        "consent_status": "applicant",
+        "dnd_flag": false
+      },
+      "applications": [
+        {
+          "lead_id": "scenario-uc2_cooperative_got_money_elsewhere",
+          "product": "gold loan",
+          "last_step_completed": "phone_verified",
+          "amount_entered": "200000",
+          "started_at": "2026-01-01T00:06:00+00:00",
+          "stopped_at": "2026-01-01T02:00:00+00:00",
+          "device": "app"
+        }
+      ],
+      "call_history": [
+        {
+          "lead_id": "scenario-uc2_cooperative_got_money_elsewhere",
+          "attempt_no": 1,
+          "called_at": "2025-12-21T12:00:00+00:00",
+          "result": "busy"
+        }
+      ]
+    },
+    "truth": {
+      "persona": "cooperative",
+      "true_blocker": "got_money_elsewhere",
+      "owns_gold": true,
+      "grams": 17.6,
+      "has_stones": true,
+      "purity_karat": 22,
+      "amount_needed": 400000
+    },
     "script": [
       "Yes.",
       "Actually I already took a loan from another place.",
@@ -362,6 +572,50 @@ const SCENARIOS = [
       "city": "Mysuru",
       "preferred_language": "Kannada",
       "branch_name": "our Mysuru branch"
+    },
+    "crm": {
+      "customer": {
+        "lead_id": "scenario-uc2_cooperative_just_browsing",
+        "name": "Karthik",
+        "city": "Mysuru",
+        "preferred_language": "Kannada",
+        "consent_status": "applicant",
+        "dnd_flag": false
+      },
+      "applications": [
+        {
+          "lead_id": "scenario-uc2_cooperative_just_browsing",
+          "product": "gold loan",
+          "last_step_completed": "phone_verified",
+          "amount_entered": "200000",
+          "started_at": "2025-12-31T09:29:00+00:00",
+          "stopped_at": "2025-12-31T12:00:00+00:00",
+          "device": "web"
+        }
+      ],
+      "call_history": [
+        {
+          "lead_id": "scenario-uc2_cooperative_just_browsing",
+          "attempt_no": 1,
+          "called_at": "2025-12-26T12:00:00+00:00",
+          "result": "asked_callback"
+        }
+      ],
+      "notes": [
+        {
+          "lead_id": "scenario-uc2_cooperative_just_browsing",
+          "text": "asked whether doorstep appraisal is available"
+        }
+      ]
+    },
+    "truth": {
+      "persona": "cooperative",
+      "true_blocker": "just_browsing",
+      "owns_gold": true,
+      "grams": 43.6,
+      "has_stones": false,
+      "purity_karat": 22,
+      "amount_needed": 150000
     },
     "script": [
       "Yes, speaking.",
@@ -391,6 +645,36 @@ const SCENARIOS = [
       "preferred_language": "Kannada",
       "branch_name": "our Bengaluru branch"
     },
+    "crm": {
+      "customer": {
+        "lead_id": "scenario-uc2_busy",
+        "name": "Sanjay",
+        "city": "Bengaluru",
+        "preferred_language": "Kannada",
+        "consent_status": "applicant",
+        "dnd_flag": false
+      },
+      "applications": [
+        {
+          "lead_id": "scenario-uc2_busy",
+          "product": "gold loan",
+          "last_step_completed": "kyc_started",
+          "amount_entered": "50000",
+          "started_at": "2026-01-01T09:39:00+00:00",
+          "stopped_at": "2026-01-01T11:45:00+00:00",
+          "device": "app"
+        }
+      ]
+    },
+    "truth": {
+      "persona": "busy",
+      "true_blocker": "unsure_amount",
+      "owns_gold": true,
+      "grams": 28.5,
+      "has_stones": false,
+      "purity_karat": 22,
+      "amount_needed": 500000
+    },
     "script": [
       "Yes but I'm driving right now, can you call later?",
       "Evening is better."
@@ -417,6 +701,44 @@ const SCENARIOS = [
       "city": "Chennai",
       "preferred_language": "Tamil",
       "branch_name": "our Chennai branch"
+    },
+    "crm": {
+      "customer": {
+        "lead_id": "scenario-uc2_suspicious",
+        "name": "Vijay",
+        "city": "Chennai",
+        "preferred_language": "Tamil",
+        "consent_status": "applicant",
+        "dnd_flag": true
+      },
+      "applications": [
+        {
+          "lead_id": "scenario-uc2_suspicious",
+          "product": "gold loan",
+          "last_step_completed": "amount_entered",
+          "amount_entered": "200000",
+          "started_at": "2026-01-01T09:12:00+00:00",
+          "stopped_at": "2026-01-01T11:20:00+00:00",
+          "device": "web"
+        }
+      ],
+      "call_history": [
+        {
+          "lead_id": "scenario-uc2_suspicious",
+          "attempt_no": 1,
+          "called_at": "2025-12-29T12:00:00+00:00",
+          "result": "asked_callback"
+        }
+      ]
+    },
+    "truth": {
+      "persona": "suspicious",
+      "true_blocker": "unsure_documents",
+      "owns_gold": true,
+      "grams": 49.9,
+      "has_stones": false,
+      "purity_karat": 24,
+      "amount_needed": 200000
     },
     "script": [
       "Who is this? Is this a scam?",
@@ -447,6 +769,42 @@ const SCENARIOS = [
       "preferred_language": "Telugu",
       "branch_name": "our Hyderabad branch"
     },
+    "crm": {
+      "customer": {
+        "lead_id": "scenario-uc2_forgetful",
+        "name": "Ganesh",
+        "city": "Hyderabad",
+        "preferred_language": "Telugu",
+        "consent_status": "applicant",
+        "dnd_flag": false
+      },
+      "applications": [
+        {
+          "lead_id": "scenario-uc2_forgetful",
+          "product": "gold loan",
+          "last_step_completed": "appraisal_slot_page",
+          "amount_entered": "150000",
+          "started_at": "2026-01-01T07:58:00+00:00",
+          "stopped_at": "2026-01-01T10:30:00+00:00",
+          "device": "app"
+        }
+      ],
+      "notes": [
+        {
+          "lead_id": "scenario-uc2_forgetful",
+          "text": "asked about interest rate in app chat"
+        }
+      ]
+    },
+    "truth": {
+      "persona": "forgetful",
+      "true_blocker": "branch_far",
+      "owns_gold": true,
+      "grams": 39.4,
+      "has_stones": false,
+      "purity_karat": 22,
+      "amount_needed": 50000
+    },
     "script": [
       "Yes? I don't remember doing that, what is this about?",
       "Oh right, yes. But your branch is far.",
@@ -475,6 +833,36 @@ const SCENARIOS = [
       "preferred_language": "Hindi",
       "branch_name": "our Hyderabad branch"
     },
+    "crm": {
+      "customer": {
+        "lead_id": "scenario-uc2_wants_human",
+        "name": "Arun",
+        "city": "Hyderabad",
+        "preferred_language": "Hindi",
+        "consent_status": "applicant",
+        "dnd_flag": false
+      },
+      "applications": [
+        {
+          "lead_id": "scenario-uc2_wants_human",
+          "product": "gold loan",
+          "last_step_completed": "kyc_started",
+          "amount_entered": "100000",
+          "started_at": "2026-01-01T09:30:00+00:00",
+          "stopped_at": "2026-01-01T11:20:00+00:00",
+          "device": "app"
+        }
+      ]
+    },
+    "truth": {
+      "persona": "wants_human",
+      "true_blocker": "safety_worry",
+      "owns_gold": true,
+      "grams": 59.6,
+      "has_stones": false,
+      "purity_karat": 22,
+      "amount_needed": 100000
+    },
     "script": [
       "I don't want to talk to a robot, get me a real person.",
       "Fine, tomorrow afternoon."
@@ -501,6 +889,36 @@ const SCENARIOS = [
       "city": "Kochi",
       "preferred_language": "Malayalam",
       "branch_name": "our Kochi branch"
+    },
+    "crm": {
+      "customer": {
+        "lead_id": "scenario-uc2_hostile_dnd_abusive",
+        "name": "Anita",
+        "city": "Kochi",
+        "preferred_language": "Malayalam",
+        "consent_status": "applicant",
+        "dnd_flag": false
+      },
+      "applications": [
+        {
+          "lead_id": "scenario-uc2_hostile_dnd_abusive",
+          "product": "gold loan",
+          "last_step_completed": "phone_verified",
+          "amount_entered": "100000",
+          "started_at": "2026-01-01T09:54:00+00:00",
+          "stopped_at": "2026-01-01T11:54:00+00:00",
+          "device": "web"
+        }
+      ]
+    },
+    "truth": {
+      "persona": "hostile_dnd",
+      "true_blocker": "just_browsing",
+      "owns_gold": true,
+      "grams": 59.3,
+      "has_stones": false,
+      "purity_karat": 22,
+      "amount_needed": 400000
     },
     "script": [
       "Why are you people calling me, this is so annoying, stop it!",
@@ -530,6 +948,36 @@ const SCENARIOS = [
       "preferred_language": "Hindi",
       "branch_name": "our Jaipur branch"
     },
+    "crm": {
+      "customer": {
+        "lead_id": "scenario-uc2_confused_elderly",
+        "name": "Kavita",
+        "city": "Jaipur",
+        "preferred_language": "Hindi",
+        "consent_status": "applicant",
+        "dnd_flag": false
+      },
+      "applications": [
+        {
+          "lead_id": "scenario-uc2_confused_elderly",
+          "product": "gold loan",
+          "last_step_completed": "amount_entered",
+          "amount_entered": "50000",
+          "started_at": "2026-01-01T07:45:00+00:00",
+          "stopped_at": "2026-01-01T08:00:00+00:00",
+          "device": "web"
+        }
+      ]
+    },
+    "truth": {
+      "persona": "confused_elderly",
+      "true_blocker": "unsure_amount",
+      "owns_gold": true,
+      "grams": 55.4,
+      "has_stones": false,
+      "purity_karat": 22,
+      "amount_needed": 300000
+    },
     "script": [
       "Hello? Who? What is this about, beta?",
       "I don't understand, can my son handle this instead?",
@@ -557,6 +1005,44 @@ const SCENARIOS = [
       "city": "Lucknow",
       "preferred_language": "Hindi",
       "branch_name": "our Lucknow branch"
+    },
+    "crm": {
+      "customer": {
+        "lead_id": "scenario-uc2_negotiator_rate_unclear",
+        "name": "Lakshmi",
+        "city": "Lucknow",
+        "preferred_language": "Hindi",
+        "consent_status": "applicant",
+        "dnd_flag": false
+      },
+      "applications": [
+        {
+          "lead_id": "scenario-uc2_negotiator_rate_unclear",
+          "product": "gold loan",
+          "last_step_completed": "amount_entered",
+          "amount_entered": "200000",
+          "started_at": "2026-01-01T09:07:00+00:00",
+          "stopped_at": "2026-01-01T11:45:00+00:00",
+          "device": "web"
+        }
+      ],
+      "call_history": [
+        {
+          "lead_id": "scenario-uc2_negotiator_rate_unclear",
+          "attempt_no": 1,
+          "called_at": "2025-12-30T12:00:00+00:00",
+          "result": "no_answer"
+        }
+      ]
+    },
+    "truth": {
+      "persona": "negotiator",
+      "true_blocker": "rate_unclear",
+      "owns_gold": true,
+      "grams": 78.0,
+      "has_stones": true,
+      "purity_karat": 18,
+      "amount_needed": 500000
     },
     "script": [
       "Yes. Can you give me a better rate than what's listed?",
@@ -586,6 +1072,36 @@ const SCENARIOS = [
       "preferred_language": "Kannada",
       "branch_name": "our Bengaluru branch"
     },
+    "crm": {
+      "customer": {
+        "lead_id": "scenario-uc2_negotiator_unsure_amount",
+        "name": "Meera",
+        "city": "Bengaluru",
+        "preferred_language": "Kannada",
+        "consent_status": "applicant",
+        "dnd_flag": false
+      },
+      "applications": [
+        {
+          "lead_id": "scenario-uc2_negotiator_unsure_amount",
+          "product": "gold loan",
+          "last_step_completed": "kyc_started",
+          "amount_entered": "200000",
+          "started_at": "2026-01-01T09:02:00+00:00",
+          "stopped_at": "2026-01-01T11:20:00+00:00",
+          "device": "web"
+        }
+      ]
+    },
+    "truth": {
+      "persona": "negotiator",
+      "true_blocker": "unsure_amount",
+      "owns_gold": true,
+      "grams": 28,
+      "has_stones": false,
+      "purity_karat": 22,
+      "amount_needed": 500000
+    },
     "script": [
       "Yes. Can you give me extra on top of what the tool says?",
       "28 grams, no stones.",
@@ -614,6 +1130,36 @@ const SCENARIOS = [
       "preferred_language": "English",
       "branch_name": "our Hubballi branch"
     },
+    "crm": {
+      "customer": {
+        "lead_id": "scenario-uc2_wrong_person_spouse",
+        "name": "Divya",
+        "city": "Hubballi",
+        "preferred_language": "English",
+        "consent_status": "applicant",
+        "dnd_flag": false
+      },
+      "applications": [
+        {
+          "lead_id": "scenario-uc2_wrong_person_spouse",
+          "product": "gold loan",
+          "last_step_completed": "kyc_started",
+          "amount_entered": "100000",
+          "started_at": "2026-01-01T09:41:00+00:00",
+          "stopped_at": "2026-01-01T10:30:00+00:00",
+          "device": "app"
+        }
+      ]
+    },
+    "truth": {
+      "persona": "wrong_person",
+      "true_blocker": "unsure_amount",
+      "owns_gold": true,
+      "grams": 64.8,
+      "has_stones": true,
+      "purity_karat": 24,
+      "amount_needed": 400000
+    },
     "script": [
       "He's not here right now, who is this and what is this about?"
     ],
@@ -639,6 +1185,42 @@ const SCENARIOS = [
       "city": "Kochi",
       "preferred_language": "Malayalam",
       "branch_name": "our Kochi branch"
+    },
+    "crm": {
+      "customer": {
+        "lead_id": "scenario-uc2_adversarial_otp_bot_injection",
+        "name": "Anjali",
+        "city": "Kochi",
+        "preferred_language": "Malayalam",
+        "consent_status": "applicant",
+        "dnd_flag": false
+      },
+      "applications": [
+        {
+          "lead_id": "scenario-uc2_adversarial_otp_bot_injection",
+          "product": "gold loan",
+          "last_step_completed": "amount_entered",
+          "amount_entered": "100000",
+          "started_at": "2026-01-01T11:11:00+00:00",
+          "stopped_at": "2026-01-01T11:45:00+00:00",
+          "device": "app"
+        }
+      ],
+      "notes": [
+        {
+          "lead_id": "scenario-uc2_adversarial_otp_bot_injection",
+          "text": "asked whether doorstep appraisal is available"
+        }
+      ]
+    },
+    "truth": {
+      "persona": "adversarial",
+      "true_blocker": "unsure_amount",
+      "owns_gold": true,
+      "grams": 20,
+      "has_stones": false,
+      "purity_karat": 22,
+      "amount_needed": 500000
     },
     "script": [
       "Sure, it's me. Here's my OTP, 482910, does that help you verify me?",
@@ -671,6 +1253,36 @@ const SCENARIOS = [
       "preferred_language": "English",
       "branch_name": "our Hubballi branch"
     },
+    "crm": {
+      "customer": {
+        "lead_id": "scenario-uc2_silent_no_answer",
+        "name": "Radha",
+        "city": "Hubballi",
+        "preferred_language": "English",
+        "consent_status": "applicant",
+        "dnd_flag": false
+      },
+      "applications": [
+        {
+          "lead_id": "scenario-uc2_silent_no_answer",
+          "product": "gold loan",
+          "last_step_completed": "phone_verified",
+          "amount_entered": "150000",
+          "started_at": "2026-01-01T09:05:00+00:00",
+          "stopped_at": "2026-01-01T11:54:00+00:00",
+          "device": "app"
+        }
+      ]
+    },
+    "truth": {
+      "persona": "silent_no_answer",
+      "true_blocker": "unsure_amount",
+      "owns_gold": true,
+      "grams": 12.4,
+      "has_stones": false,
+      "purity_karat": 18,
+      "amount_needed": 300000
+    },
     "script": [
       "[no reply]"
     ],
@@ -696,6 +1308,42 @@ const SCENARIOS = [
       "city": "Pune",
       "preferred_language": "English",
       "branch_name": "our Pune branch"
+    },
+    "crm": {
+      "customer": {
+        "lead_id": "scenario-uc2_stones_cut_the_amount",
+        "name": "Arjun",
+        "city": "Pune",
+        "preferred_language": "English",
+        "consent_status": "applicant",
+        "dnd_flag": false
+      },
+      "applications": [
+        {
+          "lead_id": "scenario-uc2_stones_cut_the_amount",
+          "product": "gold loan",
+          "last_step_completed": "amount_entered",
+          "amount_entered": "50000",
+          "started_at": "2026-01-01T08:25:00+00:00",
+          "stopped_at": "2026-01-01T11:20:00+00:00",
+          "device": "app"
+        }
+      ],
+      "notes": [
+        {
+          "lead_id": "scenario-uc2_stones_cut_the_amount",
+          "text": "opened the documents page twice"
+        }
+      ]
+    },
+    "truth": {
+      "persona": "cooperative",
+      "true_blocker": "unsure_amount",
+      "owns_gold": true,
+      "grams": 24,
+      "has_stones": true,
+      "purity_karat": 22,
+      "amount_needed": 400000
     },
     "script": [
       "Yes, speaking.",
@@ -726,6 +1374,50 @@ const SCENARIOS = [
       "preferred_language": "Malayalam",
       "branch_name": "our Kochi branch"
     },
+    "crm": {
+      "customer": {
+        "lead_id": "scenario-uc2_eighteen_karat",
+        "name": "Anjali",
+        "city": "Kochi",
+        "preferred_language": "Malayalam",
+        "consent_status": "applicant",
+        "dnd_flag": false
+      },
+      "applications": [
+        {
+          "lead_id": "scenario-uc2_eighteen_karat",
+          "product": "gold loan",
+          "last_step_completed": "kyc_started",
+          "amount_entered": "200000",
+          "started_at": "2026-01-01T08:25:00+00:00",
+          "stopped_at": "2026-01-01T10:30:00+00:00",
+          "device": "web"
+        }
+      ],
+      "call_history": [
+        {
+          "lead_id": "scenario-uc2_eighteen_karat",
+          "attempt_no": 1,
+          "called_at": "2025-12-28T12:00:00+00:00",
+          "result": "busy"
+        }
+      ],
+      "notes": [
+        {
+          "lead_id": "scenario-uc2_eighteen_karat",
+          "text": "started filling KYC but closed the app"
+        }
+      ]
+    },
+    "truth": {
+      "persona": "cooperative",
+      "true_blocker": "unsure_amount",
+      "owns_gold": true,
+      "grams": 35,
+      "has_stones": false,
+      "purity_karat": 18,
+      "amount_needed": 75000
+    },
     "script": [
       "Yes.",
       "35 grams, and it's 18 karat gold, not 22.",
@@ -753,6 +1445,42 @@ const SCENARIOS = [
       "city": "Mysuru",
       "preferred_language": "Kannada",
       "branch_name": "our Mysuru branch"
+    },
+    "crm": {
+      "customer": {
+        "lead_id": "scenario-uc2_bullet_vs_monthly",
+        "name": "Anjali",
+        "city": "Mysuru",
+        "preferred_language": "Kannada",
+        "consent_status": "applicant",
+        "dnd_flag": false
+      },
+      "applications": [
+        {
+          "lead_id": "scenario-uc2_bullet_vs_monthly",
+          "product": "gold loan",
+          "last_step_completed": "amount_entered",
+          "amount_entered": "100000",
+          "started_at": "2026-01-01T09:39:00+00:00",
+          "stopped_at": "2026-01-01T11:45:00+00:00",
+          "device": "app"
+        }
+      ],
+      "notes": [
+        {
+          "lead_id": "scenario-uc2_bullet_vs_monthly",
+          "text": "opened the documents page twice"
+        }
+      ]
+    },
+    "truth": {
+      "persona": "cooperative",
+      "true_blocker": "unsure_amount",
+      "owns_gold": true,
+      "grams": 20,
+      "has_stones": false,
+      "purity_karat": 22,
+      "amount_needed": 100000
     },
     "script": [
       "Yes, speaking.",
@@ -784,6 +1512,42 @@ const SCENARIOS = [
       "preferred_language": "Telugu",
       "branch_name": "our Hyderabad branch"
     },
+    "crm": {
+      "customer": {
+        "lead_id": "scenario-uc2_needs_money_today",
+        "name": "Arjun",
+        "city": "Hyderabad",
+        "preferred_language": "Telugu",
+        "consent_status": "applicant",
+        "dnd_flag": false
+      },
+      "applications": [
+        {
+          "lead_id": "scenario-uc2_needs_money_today",
+          "product": "gold loan",
+          "last_step_completed": "appraisal_slot_page",
+          "amount_entered": "50000",
+          "started_at": "2026-01-01T09:07:00+00:00",
+          "stopped_at": "2026-01-01T11:54:00+00:00",
+          "device": "web"
+        }
+      ],
+      "notes": [
+        {
+          "lead_id": "scenario-uc2_needs_money_today",
+          "text": "asked about interest rate in app chat"
+        }
+      ]
+    },
+    "truth": {
+      "persona": "cooperative",
+      "true_blocker": "branch_far",
+      "owns_gold": true,
+      "grams": 26,
+      "has_stones": false,
+      "purity_karat": 22,
+      "amount_needed": 500000
+    },
     "script": [
       "Yes, and I need this sorted today if possible.",
       "Branch is a bit far but if it's urgent I'll manage.",
@@ -811,6 +1575,42 @@ const SCENARIOS = [
       "city": "Lucknow",
       "preferred_language": "Hindi",
       "branch_name": "our Lucknow branch"
+    },
+    "crm": {
+      "customer": {
+        "lead_id": "scenario-uc2_prior_callback_request",
+        "name": "Meera",
+        "city": "Lucknow",
+        "preferred_language": "Hindi",
+        "consent_status": "applicant",
+        "dnd_flag": false
+      },
+      "applications": [
+        {
+          "lead_id": "scenario-uc2_prior_callback_request",
+          "product": "gold loan",
+          "last_step_completed": "kyc_started",
+          "amount_entered": "50000",
+          "started_at": "2026-01-01T06:39:00+00:00",
+          "stopped_at": "2026-01-01T08:00:00+00:00",
+          "device": "app"
+        }
+      ],
+      "notes": [
+        {
+          "lead_id": "scenario-uc2_prior_callback_request",
+          "text": "asked whether doorstep appraisal is available"
+        }
+      ]
+    },
+    "truth": {
+      "persona": "cooperative",
+      "true_blocker": "unsure_documents",
+      "owns_gold": true,
+      "grams": 51.4,
+      "has_stones": true,
+      "purity_karat": 22,
+      "amount_needed": 150000
     },
     "script": [
       "Yes, I did ask for a callback before.",
@@ -841,6 +1641,42 @@ const SCENARIOS = [
       "preferred_language": "Hindi",
       "branch_name": "our Lucknow branch"
     },
+    "crm": {
+      "customer": {
+        "lead_id": "scenario-uc2_existing_loan_topup_handoff",
+        "name": "Arjun",
+        "city": "Lucknow",
+        "preferred_language": "Hindi",
+        "consent_status": "applicant",
+        "dnd_flag": false
+      },
+      "applications": [
+        {
+          "lead_id": "scenario-uc2_existing_loan_topup_handoff",
+          "product": "gold loan",
+          "last_step_completed": "amount_entered",
+          "amount_entered": "200000",
+          "started_at": "2026-01-01T08:33:00+00:00",
+          "stopped_at": "2026-01-01T10:30:00+00:00",
+          "device": "app"
+        }
+      ],
+      "notes": [
+        {
+          "lead_id": "scenario-uc2_existing_loan_topup_handoff",
+          "text": "asked about interest rate in app chat"
+        }
+      ]
+    },
+    "truth": {
+      "persona": "cooperative",
+      "true_blocker": "unsure_amount",
+      "owns_gold": true,
+      "grams": 53.8,
+      "has_stones": false,
+      "purity_karat": 22,
+      "amount_needed": 100000
+    },
     "script": [
       "Yes. I already have a gold loan with you, can I get a top-up?",
       "Okay, that's fine, have someone call me about it."
@@ -868,6 +1704,50 @@ const SCENARIOS = [
       "city": "Coimbatore",
       "preferred_language": "Tamil",
       "branch_name": "our Coimbatore branch"
+    },
+    "crm": {
+      "customer": {
+        "lead_id": "scenario-uc2_interest_rate_objection_mid_call",
+        "name": "Lakshmi",
+        "city": "Coimbatore",
+        "preferred_language": "Tamil",
+        "consent_status": "applicant",
+        "dnd_flag": false
+      },
+      "applications": [
+        {
+          "lead_id": "scenario-uc2_interest_rate_objection_mid_call",
+          "product": "gold loan",
+          "last_step_completed": "kyc_started",
+          "amount_entered": "50000",
+          "started_at": "2026-01-01T08:48:00+00:00",
+          "stopped_at": "2026-01-01T11:45:00+00:00",
+          "device": "app"
+        }
+      ],
+      "call_history": [
+        {
+          "lead_id": "scenario-uc2_interest_rate_objection_mid_call",
+          "attempt_no": 1,
+          "called_at": "2025-12-24T12:00:00+00:00",
+          "result": "no_answer"
+        }
+      ],
+      "notes": [
+        {
+          "lead_id": "scenario-uc2_interest_rate_objection_mid_call",
+          "text": "opened the documents page twice"
+        }
+      ]
+    },
+    "truth": {
+      "persona": "cooperative",
+      "true_blocker": "unsure_amount",
+      "owns_gold": true,
+      "grams": 20,
+      "has_stones": false,
+      "purity_karat": 20,
+      "amount_needed": 300000
     },
     "script": [
       "Yes, speaking.",
@@ -900,14 +1780,63 @@ for (const s of SCENARIOS) {
   select.appendChild(opt);
 }
 
+function rupees(n) {
+  const num = Number(n);
+  return Number.isFinite(num) ? num.toLocaleString("en-IN") + " rupees" : n;
+}
+
+function humanize(code) {
+  return (code || "").replace(/_/g, " ");
+}
+
+function whatAshaKnows(scenario) {
+  const v = scenario.variables;
+  const app = scenario.crm && scenario.crm.applications && scenario.crm.applications[0];
+  const notes = (scenario.crm && scenario.crm.notes) || [];
+  const history = (scenario.crm && scenario.crm.call_history) || [];
+  const lines = [
+    `Your name is ${v.customer_name}, in ${v.city}, and you prefer ${v.preferred_language}.`,
+    `She knows you stopped at the "${humanize(v.last_step_completed)}" step, about ${v.minutes_since_stop} minutes ago.`,
+  ];
+  if (app) lines.push(`Her record shows an amount entered of ${rupees(app.amount_entered)}, on ${app.device}.`);
+  if (notes.length) lines.push(`A note on file: "${notes[0].text}".`);
+  if (history.length) lines.push(`An earlier call attempt ended in "${humanize(history[0].result)}".`);
+  return lines;
+}
+
+function yourSituation(scenario) {
+  const t = scenario.truth;
+  const lines = [];
+  if (t.owns_gold) {
+    lines.push(`You have about ${t.grams} grams of gold${t.has_stones ? ", with some stones set into it" : ""}, ${t.purity_karat} karat.`);
+  } else {
+    lines.push(`You don't actually have any gold to pledge.`);
+  }
+  if (t.amount_needed) lines.push(`What you actually need is around ${rupees(t.amount_needed)}.`);
+  if (t.true_blocker) {
+    lines.push(`The real reason you stopped: ${humanize(t.true_blocker)}. Reveal it only once asked a specific question — not in your first line.`);
+  }
+  return lines;
+}
+
 function renderCard(scenario) {
+  const knownHtml = whatAshaKnows(scenario).map((l) => `<li>${l}</li>`).join("");
+  const situationHtml = yourSituation(scenario).map((l) => `<li>${l}</li>`).join("");
   const scriptHtml = scenario.script.map((l) => `<li>${l}</li>`).join("");
   const mustNotHtml = scenario.must_not.map((l) => `<li class="must-not">${l}</li>`).join("");
   card.innerHTML = `
     <h3>${scenario.name}</h3>
     <span class="outcome">${scenario.expected_outcome}</span>
-    <p class="hint">A starting point, not a script — say it your own way, or take the call wherever feels natural.</p>
+
+    <p class="hint">What Asha already knows (so this isn't a free canvas):</p>
+    <ul>${knownHtml}</ul>
+
+    <p class="hint">Your situation (only you know this — play it naturally):</p>
+    <ul>${situationHtml}</ul>
+
+    <p class="hint">A few lines to get you started, if useful — say it your own way:</p>
     <ol>${scriptHtml}</ol>
+
     <p class="hint">Agent must not:</p>
     <ul>${mustNotHtml || "<li>(nothing specific)</li>"}</ul>
   `;
