@@ -134,17 +134,21 @@ def calculate_eligibility(
         low_spoken = indian_words(low)
         high_spoken = indian_words(high)
 
+        # Kept short on purpose: with the indicative caveat attached, the
+        # fixed wording plus two Indian-style number phrases must stay
+        # under speech_lint's 35-word cap even for the longest realistic
+        # amounts (non-round numbers run longer in words than round ones -
+        # see docs/RESULTS.md, 2026-10-30).
         if low == high:
             say_to_customer = (
-                f"Based on what you've told me, you may be eligible for about "
-                f"{high_spoken} rupees. This is indicative, and the final amount "
-                f"can come out lower at appraisal."
+                f"You may be eligible for about {high_spoken} rupees. "
+                f"This is indicative, and it may come out lower at appraisal."
             )
         else:
             say_to_customer = (
-                f"Based on what you've told me, you may be eligible for about "
-                f"{low_spoken} to {high_spoken} rupees. This is indicative, and "
-                f"the final amount can come out lower at appraisal."
+                f"You may be eligible for about {low_spoken} to {high_spoken} "
+                f"rupees. This is indicative, and it may come out lower at "
+                f"appraisal."
             )
 
         result = {
