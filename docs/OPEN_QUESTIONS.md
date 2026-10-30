@@ -94,6 +94,24 @@ something the brief got wrong or doesn't know — don't guess, ask KC.
    evidence set (CLAUDE.md Part 5.6) needs either tomorrow's quota reset
    spread across more than one day, or a paid key. **(ask Karta)**
 
+   **Update (2026-10-30):** two things now confirmed with hard numbers,
+   not guesses. (1) Gemini's free tier is **500 requests/day**, and it
+   resets on a *Pacific-time* clock (midnight PT = 07:00 UTC), not local
+   midnight - it was still showing yesterday's exhaustion for the first
+   ~40 minutes of today's testing. (2) Groq's real limit for
+   `openai/gpt-oss-120b` is **200,000 tokens/day (TPD)**, not a request
+   count - a single 60-call run needs roughly 700k-900k tokens (the
+   ~2,000-token UC2 prompt is resent on every agent turn, which these
+   stateless chat-completion APIs require), 3-4x Groq's entire daily
+   budget by itself. Groq was only ever sized for the "10-20 call spot
+   check" tier CLAUDE.md's own provider table already said it was for -
+   using it as an automatic fallback for full 60-call baselines was my
+   mistake; it can't carry one on its own. One clean 60-call run today
+   used essentially all of Gemini's 500/day budget in a single shot.
+   **Bottom line: 3 consecutive clean 60-call runs in one calendar day
+   is not achievable on free tiers as currently used - it needs either
+   several days, a smaller per-run N, or a paid key.** **(ask Karta)**
+
 12. Gemini's free-tier model names moved on from `gemini-2.5-flash`
    (404s: "no longer available to new users, use gemini-3.8-flash") to a
    `-latest`/`-lite-latest` alias scheme. `gemini-flash-latest` also hit a
