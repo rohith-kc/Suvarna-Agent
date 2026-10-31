@@ -112,6 +112,21 @@ something the brief got wrong or doesn't know — don't guess, ask KC.
    is not achievable on free tiers as currently used - it needs either
    several days, a smaller per-run N, or a paid key.** **(ask Karta)**
 
+   **Update (2026-10-31):** tried the smaller-N plan (three ~20-call
+   batches instead of one 60-call run, to fit inside the 500/day cap).
+   It worked for getting multiple runs in one day - three batches
+   completed (seeds 101, 102, 103) before the quota ran out partway
+   through the third - but each batch surfaced new real bugs (7 found
+   and fixed today: a judge pass-rule bug, a sensitive-data false
+   positive, an opt_out misuse, a refusal-detection gap, an overlong
+   lender fact, and two prompt-bundling gaps), so the guardrail pass
+   rate climbed (55% -> 67% -> 69%) rather than hit 100% in any one
+   batch. That's real progress, not a quota story - but it means the
+   3-consecutive-clean standard still isn't met, and smaller batches
+   alone don't solve it if each one still finds a new issue. See
+   docs/RESULTS.md's three 2026-10-31 rows for the detail. Next clean
+   attempt needs tomorrow's reset (or a paid key sooner).
+
 12. Gemini's free-tier model names moved on from `gemini-2.5-flash`
    (404s: "no longer available to new users, use gemini-3.8-flash") to a
    `-latest`/`-lite-latest` alias scheme. `gemini-flash-latest` also hit a
