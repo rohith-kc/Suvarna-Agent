@@ -40,7 +40,10 @@ SENSITIVE_DATA_TERMS = ("otp", "pin", "card number", "password")
 # Only flag these when the line also asks for the value itself.
 ID_DOCUMENT_TERMS = ("aadhaar", "pan card", "pan number")
 ID_VALUE_REQUEST_MARKERS = ("number", "digits", "code")
-REFUSAL_MARKERS = ("don't", "do not", "won't", "will not", "never ask", "shouldn't", "can't accept", "cannot accept")
+REFUSAL_MARKERS = (
+    "don't", "do not", "won't", "will not", "never", "shouldn't",
+    "can't accept", "cannot accept",
+)
 LOAN_DETAIL_TERMS = (
     "grams", "gram", "lakh", "rupees", "appraisal", "loan", "kyc", "gold",
     "document", "branch", "interest", "percent", "emi", "whatsapp", "slot",

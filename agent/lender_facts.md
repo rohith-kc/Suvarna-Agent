@@ -18,11 +18,10 @@ passport), one address proof if different from the ID, and the gold
 jewellery itself for appraisal. Nothing else is required for a
 straightforward application.
 
-How jewellery is handled: at the branch, it is weighed and tested in front
-of the customer, sealed into a tamper-evident pouch with the customer's
-signature across the seal, and stored in the branch vault. On full
-repayment, the same sealed pouch is opened and returned in person, and the
-customer checks and signs again.
+How jewellery is handled, as one short spoken line: weighed and tested in
+front of you, sealed in a signed, tamper-evident pouch, and kept in the
+branch vault until it's returned to you, sealed and signed, on full
+repayment.
 
 Doorstep appraisal: not offered. Every appraisal happens at a branch.
 (PLACEHOLDER pending KC's answer to docs/OPEN_QUESTIONS.md item 3 — if this
