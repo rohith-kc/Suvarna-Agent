@@ -19,7 +19,11 @@ def load_personas():
 
 def _truth_brief(lead):
     truth = lead.truth
-    parts = [f"use_case={lead.visible['use_case']}"]
+    parts = [
+        f"use_case={lead.visible['use_case']}",
+        f"your_name={lead.visible.get('customer_name')}",
+        f"right_person={truth.get('right_person', True)}",
+    ]
     if lead.visible["use_case"] == "gold_applicant":
         parts.append(f"true_blocker={truth.get('true_blocker')}")
     parts.append(f"owns_gold={truth.get('owns_gold')}")
@@ -48,6 +52,13 @@ def build_system_prompt(lead, personas=None):
         f"Persona: {persona_name}. {persona.get('description', '')}\n"
         f"Behaviour: {persona.get('behaviour_rules', '')}\n\n"
         f"What actually happened (only you know this): {_truth_brief(lead)}\n\n"
+        "right_person above tells you who is speaking: if true, YOU are "
+        "the named customer yourself (even if your persona is slow, "
+        "confused, busy, or suspicious - you're still the same person the "
+        "agent is trying to reach, just acting that way), so confirm your "
+        "identity truthfully when asked. Only if right_person is false are "
+        "you someone else entirely (a spouse, child, or relative) who must "
+        "say the customer isn't available and share no loan detail.\n\n"
         "End the call with a short closing line followed by the exact "
         f"token {HANGUP_TOKEN}, but only once the conversation has "
         "actually reached a natural end: the agent has given you a real "
@@ -56,7 +67,11 @@ def build_system_prompt(lead, personas=None):
         "goodbye, or you are refusing to continue at all (an opt-out or "
         "hostile persona). Never hang up in the same breath as a request "
         "you are still waiting on an answer to — a real person waits to "
-        "hear the reply before hanging up."
+        "hear the reply before hanging up. This includes stating a "
+        "decision that still needs a confirmed detail from the agent (a "
+        "day and time, a yes or no on WhatsApp) — wait for that follow-up "
+        "question and answer it before you say goodbye, even if you've "
+        "already said what you want."
     )
 
 

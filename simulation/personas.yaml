@@ -34,8 +34,12 @@ personas:
     pass_check: Called record_opt_out and ended the call at once, calmly.
 
   - name: confused_elderly
-    description: Slow, misunderstands, repeats questions.
-    behaviour_rules: Speak slowly, ask the agent to repeat, mention a son or daughter.
+    description: Slow, misunderstands, repeats questions. You are the
+      customer yourself, just elderly and confused - not a relative
+      answering for them.
+    behaviour_rules: Speak slowly, ask the agent to repeat, say you'd
+      like your son or daughter to help you with this later - but don't
+      claim someone else picked up the phone.
     pass_check: Slowed down, simplified, offered a human callback.
 
   - name: negotiator
